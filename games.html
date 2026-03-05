@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>UC Games Arcade</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap');
+
+  :root {
+    --bg: #000080;
+    --text: #ffffff;
+    --lime: #00ff00;
+    --cyan: #00ffff;
+    --yellow: #FFCC00;
+    --grey: #c0c0c0;
+    --navy: #000080;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box;}
+  body{
+    background: var(--bg);
+    font-family:'VT323',monospace;
+    color: var(--text);
+  }
+  .main-header{
+    text-align:center; padding:16px; background:#000; border-bottom:4px groove #808080;
+  }
+  .main-header .title{font-family:'Press Start 2P',monospace; font-size:28px; color:var(--lime);}
+  .navbar{
+    background:#008080; border-top:3px ridge #c0c0c0; border-bottom:3px ridge #c0c0c0;
+    display:flex; gap:4px; justify-content:center; padding:4px;
+  }
+  .navbar a{
+    background: linear-gradient(180deg,#dfdfdf,#c0c0c0,#808080);
+    padding:6px 12px; text-decoration:none; color:#000; font-size:16px;
+    border:2px solid #fff;
+  }
+  .navbar a:hover{background: linear-gradient(180deg,#808080,#c0c0c0,#dfdfdf);}
+  .page-wrapper{padding:12px; max-width:1250px; margin:0 auto;} /* wide enough for 5 columns */
+  
+  /* FIXED GRID: 5 columns, fixed height */
+  .game-grid{
+    display:grid;
+    grid-template-columns: repeat(5, 240px); /* 5 fixed columns */
+    grid-auto-rows: 340px;                   /* fixed row height */
+    gap:12px;
+    justify-content: center;
+  }
+
+  /* Linked game card */
+  .game-card{
+    background:var(--grey); border:2px outset #fff; padding:8px;
+    display:flex; flex-direction:column;
+    min-height:340px;
+    overflow:hidden;
+  }
+  .game-card:hover{border-color:var(--yellow);}
+  .game-card-content{
+    height:160px; /* top half: thumbnail or preview */
+    overflow:hidden;
+  }
+  .game-thumb{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border:1px solid #000;
+  }
+  .game-title{
+    text-align:center; font-family:'Press Start 2P',monospace; font-size:14px; color:var(--navy);
+    margin-top:4px;
+  }
+
+  /* Embedded game card */
+  .win98-game{
+    background:var(--grey); border:2px solid #fff; width:100%;
+    display:flex; flex-direction:column;
+    overflow:hidden;
+  }
+  .win98-title{background: linear-gradient(90deg,#000080,#1084d0); color:#fff; padding:4px 6px; font-size:14px;}
+  .win98-body{
+    height:160px; /* top half for embedded preview */
+    overflow:hidden;
+  }
+  .win98-body iframe{
+    width:100%;
+    height:100%;
+    border:0;
+  }
+  .win98-description{
+    padding:4px 2px;
+    font-size:12px;
+    text-align:center;
+    color:var(--navy);
+  }
+</style>
+</head>
+<body>
+
+<div class="main-header">
+  <div class="title">UNROUTED CONTROLS ARCADE</div>
+</div>
+
+<div class="navbar">
+  <a href="index.html">HOME</a>
+  <a href="#arcade">PLAY</a>
+  <a href="index.html">BACK</a>
+</div>
+
+<div class="page-wrapper">
+
+  <h2 style="font-family:'Press Start 2P',monospace;color:var(--yellow);margin-bottom:8px;">~ GAMES ~</h2>
+
+  <div class="game-grid">
+
+    <!-- Linked game -->
+    <div class="win98-game">
+      <div class="win98-title">Tetris</div>
+    <div class="game-card" onclick="window.open('https://cdn.htmlgames.com/UpsideDown/', '_blank')">
+      <div class="game-card-content">
+        <img src="https://www.classicgame.com/uploaded/game/thumb/upsidedown300200.webp" alt="Game" class="game-thumb">
+      </div>
+      <div class="game-title">Tetris</div>
+      <div class="win98-description">Tetris is a puzzle video game created in 1985 by Alexey Pajitnov, a Soviet software engineer. In the game, falling tetromino shapes must be neatly sorted into a pile. Once a horizontal line of the board is filled in, the line disappears, granting points and preventing the pile from overflowing.</div>
+    </div>
+    </div>
+
+    <!-- Embedded game -->
+    <div class="win98-game">
+      <div class="win98-title">WaterWorks</div>
+      <div class="win98-body">
+        <iframe src="https://itch.io/embed/585053"></iframe>
+      </div>
+      <div class="win98-description">Waterworks! is a card-based strategy game. You've been placed in charge of the water supply in the medieval town of Grudziądz. You'll have to use your management skills to make sure every house has enough water and at the same time gather supplies for development of new technologies!</div>
+    </div>
+
+<!-- Peggy's Post -->
+    <div class="win98-game">
+      <div class="win98-title">Peggy's Post</div>
+      <div class="win98-body">
+        <iframe src="https://itch.io/embed/2048296"></iframe>
+      </div>
+      <div class="win98-description">As the new owner of a lighthouse-based post office, it's your role to sort mail, assign postage, and load parcels onto the correct delivery vehicle for shipping. Manage your earnings to upgrade your tools, purchase stamp packs, charter new ships, and above all else, pay off your loan in time -- or the lender *will* foreclose on your lighthouse.</div>
+    </div>
+    
+    
+<!-- Dwarf Eats Mountain -->
+   <div class="win98-game">
+      <div class="win98-title">Dwarf Eats Mountain</div>
+      <div class="win98-body">
+        <iframe src="https://itch.io/embed/3940663"></iframe>
+        </div>
+      <div class="win98-description">Dwarf Eats Mountain is a simple strategic incremental game about mining mountains with dwarves and their war machines. Harvest gold and artifacts, then use those riches to upgrade and grow your dwarven empire — so you can devour even bigger mountains!</div>
+    </div>
+
+
+<!--MicroWar -->
+     <div class="win98-game">
+      <div class="win98-title">Micro War</div>
+      <div class="win98-body">
+        <iframe src="https://itch.io/embed/4310609"></iframe>
+      </div>
+      <div class="win98-description">Level based micro real time war game. It plays randomized chiptune jazz different each session</div>
+    </div>
+    
+<!-- Chefs Shift Game 6-->
+    <div class="win98-game">
+      <div class="win98-title">The Chef's Shift</div>
+      <div class="win98-body">
+        <iframe src="https://itch.io/embed/1798734"></iframe>
+        </div>
+      <div class="win98-description">Serve hungry customers,
+get them satisfied — and in return, get their money —
+to help you get closer to reaching the minimum sales target.
+It requires a good balancing act between cooking, serving,
+and managing all kinds of disturbance, all at the same time.
+
+Type words above the dish to prepare 'em up.
+Some dish requires additional process,
+but more on that later.</div>
+    </div>
+    
+    <!-- swords-and-sandals-2 Game 7-->
+    <div class="win98-game">
+      <div class="win98-title">Swords & Sandals 2</div>
+        <div class="game-card" onclick="window.open('https://www.crazygames.com/game/swords-and-sandals-2', '_blank')">
+      <div class="game-card-content">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6nWpp5-WOf5dYuQawNSLJoNa8IvHkdGfhig&s" alt="https://imgs.crazygames.com/swordsandsandals2.png?metadata=none&quality=85&width=196&dpr=1" class="game-thumb">
+      </div>
+      <div class="game-title">Swords & Sandals 2</div>
+      <div class="win98-description">Swords and Sandals 2 is an action-turn-based gladiator game with RPG elements. This second installment marks the return of this classic gladiator battle game! Create your character, buy battle gear, and fight for gold or your life in the arena.</div>
+    </div>
+    </div>
+    <!-- Help no brake Game 8-->
+    <div class="win98-game">
+      <div class="win98-title">HELP! NO BRAKE!</div>
+      <div class="win98-body">
+        <iframe src="https://itch.io/embed/1755170"></iframe>
+      </div>
+      <div class="win98-description">Fast paced top down action platformer about driving with no brakes. Reach the end of each level without blowing up your car to get the amazing reward of going to the next level. </div>
+    </div>
+    
+    <div class="win98-game">
+      <div class="win98-title">Poor Mans Minecraft</div>
+    <div class="game-card" onclick="window.open('https://bloxd.io/play/classic_survival/3', '_blank')">
+      <div class="game-card-content">
+        <img src="https://imgs.crazygames.com/bloxdhop-io_16x9/20250829023851/bloxdhop-io_16x9-cover?metadata=none&quality=60&height=6847" alt="Game" class="game-thumb">
+      </div>
+      <div class="game-title">Bloxd.io</div>
+      <div class="win98-description">Free online in browser "minecraft" No account needed.</div>
+    </div>
+    </div>
+    
+    <!--Scale The Depths Fishing chef game -->
+    <div class="win98-game">
+      <div class="win98-title"> Scale The Depths</div>
+      <div class="win98-body">
+        <iframe src="https://itch.io/embed/2912112"></iframe>
+      </div>
+      <div class="win98-description">Fish, scale, sell, repeat. Scale the Depths is a casual fishing game built around this simple but satisfying loop. Feed hungry customers, upgrade your gear, and uncover the many secrets hidden beneath the surface.</div>
+    
+
+    
+
+  </div>
+</div>
+
+</body>
+</html>
