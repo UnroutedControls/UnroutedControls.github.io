@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BS Mail Post Composer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Courier+Prime:wght@400;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #008080;
+    background-image:
+      repeating-linear-gradient(0deg,rgba(0,0,0,0.05) 0,rgba(0,0,0,0.05) 1px,transparent 1px,transparent 4px),
+      repeating-linear-gradient(90deg,rgba(0,0,0,0.05) 0,rgba(0,0,0,0.05) 1px,transparent 1px,transparent 4px);
+    font-family: 'Share Tech Mono', monospace;
+    min-height: 100vh;
+    padding: 16px;
+  }
+
+  /* ── WIN98 CHROME ── */
+  .window {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #c0c0c0;
+    border: 2px solid;
+    border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000;
+  }
+
+  .titlebar {
+    background: linear-gradient(to right, #000080, #1084d0);
+    color: #fff;
+    font-family: 'VT323', monospace;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    padding: 3px 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+  }
+  .win-btns { display: flex; gap: 2px; }
+  .win-btn {
+    width: 16px; height: 14px;
+    background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 9px; line-height: 13px; text-align: center;
+    color: #000; font-weight: bold; cursor: default;
+  }
+
+  .menubar {
+    background: #c0c0c0; padding: 2px 6px;
+    border-bottom: 1px solid #808080;
+    font-family: 'VT323', monospace; font-size: 1rem; color: #000;
+    display: flex; gap: 0;
+  }
+  .menubar span { padding: 1px 10px; cursor: default; }
+  .menubar span:hover { background: #000080; color: #fff; }
+
+  .toolbar {
+    background: #c0c0c0; padding: 3px 6px;
+    border-bottom: 1px solid #808080;
+    display: flex; gap: 3px; align-items: center; flex-wrap: wrap;
+  }
+  .tb-sep { width: 1px; height: 20px; background: #808080; margin: 0 3px; }
+  .tb-btn {
+    background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-family: 'VT323', monospace; font-size: 0.9rem; color: #000;
+    padding: 1px 8px; cursor: pointer; letter-spacing: 1px;
+    white-space: nowrap;
+  }
+  .tb-btn:hover { background: #d0d0d0; }
+  .tb-btn:active { border-color: #808080 #fff #fff #808080; }
+  .tb-btn.accent {
+    background: linear-gradient(180deg, #d0ffd0 0%, #a0e0a0 100%);
+    border-color: #fff #006600 #006600 #fff;
+    font-weight: bold;
+    color: #004400;
+  }
+
+  /* ── BODY LAYOUT ── */
+  .composer-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 0;
+    min-height: 560px;
+  }
+
+  /* ── META FIELDS (full width top) ── */
+  .meta-section {
+    grid-column: 1 / -1;
+    background: #c0c0c0;
+    padding: 8px 10px;
+    border-bottom: 2px solid #808080;
+    display: grid;
+    grid-template-columns: 80px 1fr 100px 1fr;
+    gap: 4px 8px;
+    align-items: center;
+  }
+  .meta-label {
+    font-family: 'VT323', monospace;
+    font-size: 0.95rem;
+    color: #000080;
+    letter-spacing: 1px;
+    text-align: right;
+  }
+  .meta-input {
+    background: #fff;
+    border: 2px solid; border-color: #808080 #fff #fff #808080;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.78rem;
+    color: #000;
+    padding: 2px 5px;
+    width: 100%;
+  }
+  .meta-input:focus { outline: 1px solid #000080; }
+
+  /* ── EDITOR PANE ── */
+  .editor-pane {
+    border-right: 2px solid #808080;
+    display: flex;
+    flex-direction: column;
+  }
+  .pane-title {
+    background: #808080;
+    color: #fff;
+    font-family: 'VT323', monospace;
+    font-size: 0.85rem;
+    padding: 2px 8px;
+    letter-spacing: 1px;
+  }
+  #editor {
+    flex: 1;
+    width: 100%;
+    min-height: 400px;
+    background: #fff;
+    border: none;
+    resize: none;
+    font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: #111;
+    padding: 12px;
+    border-bottom: 2px solid #808080;
+  }
+  #editor:focus { outline: none; }
+  #editor::placeholder { color: #aaa; }
+
+  /* editor toolbar */
+  .editor-toolbar {
+    background: #c0c0c0;
+    padding: 3px 6px;
+    display: flex;
+    gap: 2px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #808080;
+  }
+  .fmt-btn {
+    background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-family: 'VT323', monospace; font-size: 0.85rem;
+    padding: 0 6px; cursor: pointer; color: #000;
+    min-width: 24px; text-align: center; line-height: 18px;
+  }
+  .fmt-btn:active { border-color: #808080 #fff #fff #808080; }
+  .fmt-sep { width: 1px; height: 18px; background: #808080; margin: 0 2px; align-self: center; }
+
+  /* word count bar */
+  .editor-status {
+    background: #c0c0c0;
+    padding: 2px 8px;
+    font-family: 'VT323', monospace;
+    font-size: 0.78rem;
+    color: #555;
+    border-bottom: 1px solid #808080;
+    display: flex;
+    gap: 12px;
+  }
+
+  /* ── PREVIEW PANE ── */
+  .preview-pane {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  #preview {
+    flex: 1;
+    background: #fff;
+    overflow-y: auto;
+    padding: 20px 24px;
+    min-height: 400px;
+    border-bottom: 2px solid #808080;
+    font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+    font-size: 0.84rem;
+    line-height: 1.8;
+    color: #111;
+  }
+  #preview h1 { font-size: 1.2rem; font-weight: 700; text-transform: uppercase; border-bottom: 2px solid #000; padding-bottom: 5px; margin-bottom: 8px; letter-spacing: 1px; }
+  #preview h2 { font-size: 1rem; font-weight: 700; text-transform: uppercase; border-bottom: 1px dashed #555; margin: 16px 0 5px; padding-bottom: 2px; }
+  #preview h3 { font-size: 0.9rem; font-weight: 700; text-transform: uppercase; margin: 12px 0 4px; }
+  #preview p  { margin-bottom: 10px; }
+  #preview ul, #preview ol { margin: 0 0 10px 18px; }
+  #preview li::marker { content: '>> '; color: #555; font-size: 0.75rem; }
+  #preview code { background: #f0f0f0; border: 1px solid #999; padding: 0 4px; font-family: 'Courier Prime', monospace; font-size: 0.82rem; }
+  #preview pre { background: #f8f8f8; border: 2px solid #000; border-left: 5px solid #000; padding: 10px 12px; margin-bottom: 12px; white-space: pre-wrap; word-break: break-word; font-size: 0.78rem; }
+  #preview blockquote { border-left: 4px solid #555; padding-left: 12px; color: #444; font-style: italic; margin-bottom: 10px; }
+  #preview a { color: #000080; }
+  #preview strong { font-weight: 700; }
+  #preview em { font-style: italic; }
+  #preview hr { border: none; border-top: 1px dashed #aaa; margin: 14px 0; }
+  #preview .preview-postmark {
+    float: right; width: 60px; height: 60px;
+    border: 2px solid #cc0000; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.38rem; color: #cc0000; text-align: center;
+    letter-spacing: 1px; text-transform: uppercase; line-height: 1.3;
+    opacity: 0.75; margin: 0 0 8px 12px;
+  }
+  #preview .preview-sig {
+    margin-top: 16px; padding-top: 8px; border-top: 1px solid #000;
+    font-size: 0.76rem; color: #444; display: flex; justify-content: space-between; letter-spacing: 1px;
+  }
+  .preview-placeholder {
+    color: #bbb; font-family: 'VT323', monospace; font-size: 1rem;
+    text-align: center; padding-top: 40px; letter-spacing: 2px; line-height: 2;
+  }
+
+  /* ── OUTPUT SECTION (full width bottom) ── */
+  .output-section {
+    grid-column: 1 / -1;
+    border-top: 2px groove #808080;
+    background: #c0c0c0;
+    padding: 8px 10px;
+  }
+  .output-tabs {
+    display: flex; gap: 2px; margin-bottom: 6px;
+  }
+  .tab-btn {
+    background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    font-family: 'VT323', monospace; font-size: 0.9rem; color: #000;
+    padding: 1px 12px; cursor: pointer; letter-spacing: 1px;
+  }
+  .tab-btn.active {
+    background: #fff;
+    border-bottom-color: #fff;
+    margin-bottom: -2px;
+    padding-bottom: 3px;
+  }
+  .output-label {
+    font-family: 'VT323', monospace; font-size: 0.85rem; color: #000080;
+    margin-bottom: 3px; letter-spacing: 1px;
+  }
+  #output-code {
+    width: 100%;
+    height: 120px;
+    background: #000;
+    color: #00ff00;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem;
+    line-height: 1.5;
+    border: 2px inset #808080;
+    padding: 6px 8px;
+    resize: vertical;
+    letter-spacing: 0.5px;
+  }
+  .copy-row {
+    display: flex; gap: 4px; margin-top: 5px; align-items: center;
+  }
+  .copy-btn {
+    background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    font-family: 'VT323', monospace; font-size: 0.9rem; color: #000;
+    padding: 1px 10px; cursor: pointer; letter-spacing: 1px;
+  }
+  .copy-btn:active { border-color: #808080 #fff #fff #808080; }
+  .copy-btn.ok { color: #006600; font-weight: bold; }
+  .copy-hint {
+    font-family: 'VT323', monospace; font-size: 0.8rem; color: #555;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── MODAL: paste output instructions ── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.15s;
+  }
+  .modal-overlay.show { opacity: 1; pointer-events: all; }
+  .modal {
+    background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 3px 3px 0 #000;
+    width: 480px;
+  }
+  .modal-title {
+    background: linear-gradient(to right, #000080, #1084d0);
+    color: #fff; font-family: 'VT323', monospace; font-size: 1rem;
+    padding: 3px 6px; letter-spacing: 1px;
+    display: flex; justify-content: space-between;
+  }
+  .modal-body { padding: 14px 16px; font-family: 'VT323', monospace; font-size: 0.9rem; color: #000; line-height: 1.7; }
+  .modal-body ol { padding-left: 20px; }
+  .modal-body code { background: #000; color: #00ff00; padding: 1px 5px; font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; }
+  .modal-close { background: #c0c0c0; border: 1px solid; border-color: #fff #808080 #808080 #fff; color: #000; font-weight: bold; cursor: default; width: 16px; height: 14px; font-size: 9px; text-align: center; line-height: 13px; }
+  .modal-footer { padding: 8px 16px; border-top: 1px solid #808080; display: flex; justify-content: flex-end; }
+  .modal-ok { background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff; font-family: 'VT323', monospace; font-size: 0.9rem; padding: 2px 16px; cursor: pointer; }
+
+  /* statusbar */
+  .statusbar {
+    background: #c0c0c0; border-top: 1px solid #808080;
+    padding: 2px 6px; font-family: 'VT323', monospace; font-size: 0.78rem;
+    color: #000; display: flex; gap: 6px;
+  }
+  .status-panel { border: 1px inset #808080; padding: 0 5px; }
+</style>
+</head>
+<body>
+
+<div class="window">
+
+  <!-- TITLEBAR -->
+  <div class="titlebar">
+    <span>&#x270F; BS Mail Post Composer v1.0</span>
+    <div class="win-btns">
+      <div class="win-btn">_</div>
+      <div class="win-btn">&#x25A1;</div>
+      <div class="win-btn">&#x2715;</div>
+    </div>
+  </div>
+
+  <!-- MENUBAR -->
+  <div class="menubar">
+    <span>File</span><span>Edit</span><span>View</span><span>Help</span>
+  </div>
+
+  <!-- MAIN TOOLBAR -->
+  <div class="toolbar">
+    <button class="tb-btn accent" onclick="generateOutput('both')">&#x26A1; GENERATE PASTE CODE</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" onclick="loadMdFile()">&#x1F4C2; Load .md File</button>
+    <button class="tb-btn" onclick="saveMdFile()">&#x1F4BE; Save as .md</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" onclick="clearAll()">&#x1F5D1; Clear</button>
+    <button class="tb-btn" onclick="showHelp()">&#x2753; How to paste</button>
+    <input type="file" id="md-file-input" accept=".md,.txt" style="display:none" onchange="handleMdLoad(this)">
+  </div>
+
+  <!-- COMPOSER BODY -->
+  <div class="composer-body">
+
+    <!-- META FIELDS -->
+    <div class="meta-section">
+      <span class="meta-label">Subject:</span>
+      <input class="meta-input" id="f-title" placeholder="My Post Title" oninput="updatePreview()">
+      <span class="meta-label">Date:</span>
+      <input class="meta-input" id="f-date" placeholder="MM/DD/YY" oninput="updatePreview()">
+      <span class="meta-label">Post ID:</span>
+      <input class="meta-input" id="f-id" placeholder="post-2  (must be unique)" oninput="updatePreview()">
+      <span class="meta-label">From:</span>
+      <input class="meta-input" id="f-from" placeholder="uc" value="uc" oninput="updatePreview()">
+    </div>
+
+    <!-- EDITOR PANE -->
+    <div class="editor-pane">
+      <div class="pane-title">&#x270F; MARKDOWN EDITOR</div>
+      <div class="editor-toolbar">
+        <button class="fmt-btn" onclick="fmt('**','**')" title="Bold"><strong>B</strong></button>
+        <button class="fmt-btn" onclick="fmt('*','*')" title="Italic"><em>I</em></button>
+        <button class="fmt-btn" onclick="fmt('`','`')" title="Inline code">{ }</button>
+        <div class="fmt-sep"></div>
+        <button class="fmt-btn" onclick="fmtLine('# ')"   title="H1">H1</button>
+        <button class="fmt-btn" onclick="fmtLine('## ')"  title="H2">H2</button>
+        <button class="fmt-btn" onclick="fmtLine('### ')" title="H3">H3</button>
+        <div class="fmt-sep"></div>
+        <button class="fmt-btn" onclick="fmtLine('- ')"   title="Bullet">&#x2022;</button>
+        <button class="fmt-btn" onclick="fmtLine('> ')"   title="Quote">"</button>
+        <button class="fmt-btn" onclick="insertBlock('```\n\n```')" title="Code block">[  ]</button>
+        <div class="fmt-sep"></div>
+        <button class="fmt-btn" onclick="insertBlock('\n---\n')" title="Divider">&#x2500;</button>
+        <button class="fmt-btn" onclick="insertLink()" title="Link">&#x1F517;</button>
+      </div>
+      <textarea id="editor" placeholder="Write your post in markdown here...
+
+# Your Post Title
+
+Start writing! Use the toolbar above for formatting.
+
+You can use:
+- **bold text**
+- *italic text*
+- `inline code`
+- > blockquotes
+- [links](https://example.com)
+
+## Section Headers
+
+Just write naturally and it'll look great on the paper letter!
+
+---
+
+(dividers become decorative ascii lines)" oninput="updatePreview(); updateWordCount();"></textarea>
+      <div class="editor-status">
+        <span id="wc-words">0 words</span>
+        <span id="wc-chars">0 chars</span>
+        <span id="wc-lines">0 lines</span>
+      </div>
+    </div>
+
+    <!-- PREVIEW PANE -->
+    <div class="preview-pane">
+      <div class="pane-title">&#x1F4C4; PAPER PREVIEW</div>
+      <div id="preview">
+        <div class="preview-placeholder">
+          &#x25B6; start typing to see preview...
+        </div>
+      </div>
+    </div>
+
+    <!-- OUTPUT SECTION -->
+    <div class="output-section">
+      <div class="output-tabs">
+        <button class="tab-btn active" id="tab-both"  onclick="switchTab('both')">&#x1F4CB; Full Paste (Row + Block)</button>
+        <button class="tab-btn"        id="tab-row"   onclick="switchTab('row')" >&#x1F4E7; Inbox Row only</button>
+        <button class="tab-btn"        id="tab-block" onclick="switchTab('block')">&#x1F4DD; Markdown Block only</button>
+      </div>
+      <div class="output-label" id="output-label">Paste BOTH snippets into brainstew.html at the marked locations:</div>
+      <textarea id="output-code" readonly placeholder="&#x26A1; Hit GENERATE PASTE CODE above to build the snippets..."></textarea>
+      <div class="copy-row">
+        <button class="copy-btn" id="copy-btn" onclick="copyOutput()">&#x1F4CB; Copy to Clipboard</button>
+        <span class="copy-hint" id="copy-hint">paste into brainstew.html at the two marked comment locations</span>
+      </div>
+    </div>
+
+  </div><!-- end composer-body -->
+
+  <!-- STATUSBAR -->
+  <div class="statusbar">
+    <div class="status-panel" id="status-msg">ready :: write a post and hit GENERATE</div>
+    <div class="status-panel">BS Mail Composer v1.0</div>
+  </div>
+
+</div><!-- end window -->
+
+<!-- HOW TO PASTE MODAL -->
+<div class="modal-overlay" id="help-modal">
+  <div class="modal">
+    <div class="modal-title">
+      <span>&#x2753; How to add a post to brainstew.html</span>
+      <div class="modal-close" onclick="closeHelp()">&#x2715;</div>
+    </div>
+    <div class="modal-body">
+      <p>After hitting <strong>GENERATE PASTE CODE</strong>, copy the output and open <code>brainstew.html</code> in a text editor.</p>
+      <br>
+      <ol>
+        <li>Find the comment:<br><code>&lt;!-- ADD POSTS HERE --&gt;</code><br>Paste the <strong>inbox row</strong> HTML there.</li>
+        <li><br>Find the comment:<br><code>&lt;!-- add more markdown posts here --&gt;</code><br>Paste the <strong>markdown script block</strong> there.</li>
+        <li><br>Update the <strong>statusbar</strong> message count if you want.</li>
+        <li><br>Save and upload to Neocities. Done!! &#x2665;</li>
+      </ol>
+      <br>
+      <p>Or just upload a <code>.md</code> file directly to brainstew.html using the <strong>Open .md</strong> button in the toolbar — it'll render immediately without editing any HTML!</p>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-ok" onclick="closeHelp()">OK</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── State ──
+let currentTab = 'both';
+
+// ── Set today's date on load ──
+window.addEventListener('DOMContentLoaded', () => {
+  const d = new Date();
+  const date = String(d.getMonth()+1).padStart(2,'0') + '/' +
+               String(d.getDate()).padStart(2,'0') + '/' +
+               String(d.getFullYear()).slice(-2);
+  document.getElementById('f-date').value = date;
+  // suggest a post ID
+  document.getElementById('f-id').value = 'post-' + Date.now().toString(36).slice(-4);
+});
+
+// ── Markdown Parser (same as brainstew) ──
+function parseMarkdown(md) {
+  const lines = md.split('\n');
+  let html='', inList=false, listType='', inPre=false, preBuf='', inBq=false, bqBuf='';
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const inline = s => s
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/\[(.+?)\]\((.+?)\)/g,'<a href="$2" target="_blank">$1</a>');
+  const flushList = () => { if(inList){html+=`</${listType}>`;inList=false;} };
+  const flushBq   = () => { if(inBq){html+=`<blockquote><p>${inline(bqBuf.trim())}</p></blockquote>`;inBq=false;bqBuf='';} };
+  for(const line of lines){
+    if(line.startsWith('```')){
+      if(!inPre){flushList();flushBq();inPre=true;preBuf='';}
+      else{html+=`<pre><code>${esc(preBuf)}</code></pre>`;inPre=false;}
+      continue;
+    }
+    if(inPre){preBuf+=line+'\n';continue;}
+    if(line.startsWith('> ')){flushList();inBq=true;bqBuf+=line.slice(2)+' ';continue;}
+    else flushBq();
+    if(/^---+$/.test(line.trim())){flushList();html+='<hr>';continue;}
+    const hm=line.match(/^(#{1,3})\s+(.+)/);
+    if(hm){flushList();html+=`<h${hm[1].length}>${inline(hm[2])}</h${hm[1].length}>`;continue;}
+    if(/^[-*]\s+/.test(line)){
+      if(!inList||listType!=='ul'){flushList();html+='<ul>';inList=true;listType='ul';}
+      html+=`<li>${inline(line.replace(/^[-*]\s+/,''))}</li>`;continue;
+    }
+    if(/^\d+\.\s+/.test(line)){
+      if(!inList||listType!=='ol'){flushList();html+='<ol>';inList=true;listType='ol';}
+      html+=`<li>${inline(line.replace(/^\d+\.\s+/,''))}</li>`;continue;
+    }
+    flushList();
+    if(line.trim()) html+=`<p>${inline(line)}</p>`;
+  }
+  flushList();flushBq();
+  return html;
+}
+
+// ── Live Preview ──
+function updatePreview() {
+  const title = document.getElementById('f-title').value.trim() || 'Untitled';
+  const date  = document.getElementById('f-date').value.trim()  || 'MM/DD/YY';
+  const from  = document.getElementById('f-from').value.trim()  || 'uc';
+  const md    = document.getElementById('editor').value;
+
+  const preview = document.getElementById('preview');
+
+  if (!md.trim()) {
+    preview.innerHTML = '<div class="preview-placeholder">&#x25B6; start typing to see preview...</div>';
+    return;
+  }
+
+  let body = parseMarkdown(md);
+  body = body.replace(/<hr>/g, '<div style="border:none;border-top:1px dashed #aaa;margin:14px 0;"></div>');
+
+  preview.innerHTML =
+    `<div class="preview-postmark">BRAIN<br>STEW<br>MAIL<br>─────<br>UC NET</div>` +
+    `<h1>${title}</h1>` +
+    body +
+    `<div class="preview-sig"><span>-- ${from} :: BRAIN STEW</span><span>${date}</span></div>`;
+}
+
+// ── Word Count ──
+function updateWordCount() {
+  const md = document.getElementById('editor').value;
+  const words = md.trim() ? md.trim().split(/\s+/).length : 0;
+  const chars = md.length;
+  const lines = md.split('\n').length;
+  document.getElementById('wc-words').textContent = words + ' word' + (words===1?'':'s');
+  document.getElementById('wc-chars').textContent = chars + ' chars';
+  document.getElementById('wc-lines').textContent = lines + ' lines';
+}
+
+// ── Generate Output Code ──
+function generateOutput(tab) {
+  const title = document.getElementById('f-title').value.trim();
+  const date  = document.getElementById('f-date').value.trim();
+  const id    = document.getElementById('f-id').value.trim().replace(/\s+/g,'-');
+  const from  = document.getElementById('f-from').value.trim() || 'uc';
+  const md    = document.getElementById('editor').value;
+
+  if (!title || !id || !md.trim()) {
+    setStatus('!! fill in Subject, Post ID, and write some content first');
+    document.getElementById('output-code').value = '';
+    return;
+  }
+
+  // Inbox row HTML
+  const rowHtml =
+`<!-- ADD THIS ROW to inbox-rows div in brainstew.html -->
+<div class="inbox-item unread" data-post-id="${id}">
+  <div>&#x1F4E7;</div>
+  <div class="dot-cell">&#x25CF;</div>
+  <div>${escHtml(title)}</div>
+  <div>${escHtml(from)}</div>
+  <div>${escHtml(date)}</div>
+</div>`;
+
+  // Markdown block
+  const mdBlock =
+`<!-- ADD THIS BLOCK before </body> in brainstew.html -->
+<script type="text/markdown" id="${id}" data-title="${escHtml(title)}" data-date="${escHtml(date)}">
+${md}
+<\/script>`;
+
+  // Both combined
+  const bothOutput = rowHtml + '\n\n\n' + mdBlock;
+
+  if (tab === 'row')   { document.getElementById('output-code').value = rowHtml; }
+  else if (tab === 'block') { document.getElementById('output-code').value = mdBlock; }
+  else                 { document.getElementById('output-code').value = bothOutput; }
+
+  // Store for tab switching
+  window._lastRow   = rowHtml;
+  window._lastBlock = mdBlock;
+  window._lastBoth  = bothOutput;
+
+  switchTab(currentTab);
+  setStatus('code generated!! copy it and paste into brainstew.html');
+}
+
+// ── Tab switching ──
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+
+  const labels = {
+    both:  'Paste BOTH snippets into brainstew.html at the marked locations:',
+    row:   'Paste this INBOX ROW inside the #inbox-rows div:',
+    block: 'Paste this MARKDOWN BLOCK before </body> in brainstew.html:'
+  };
+  document.getElementById('output-label').textContent = labels[tab];
+
+  if (window._lastBoth) {
+    const vals = { both: window._lastBoth, row: window._lastRow, block: window._lastBlock };
+    document.getElementById('output-code').value = vals[tab] || '';
+  }
+}
+
+// ── Copy to clipboard ──
+function copyOutput() {
+  const ta = document.getElementById('output-code');
+  if (!ta.value) { setStatus('nothing to copy — generate first!'); return; }
+  navigator.clipboard.writeText(ta.value).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = '✓ Copied!'; btn.classList.add('ok');
+    document.getElementById('copy-hint').textContent = 'pasted into brainstew.html at the two comment markers';
+    setStatus('copied to clipboard!! open brainstew.html and paste');
+    setTimeout(() => {
+      btn.textContent = '📋 Copy to Clipboard'; btn.classList.remove('ok');
+    }, 2500);
+  }).catch(() => {
+    ta.select(); document.execCommand('copy');
+    setStatus('copied (fallback method)');
+  });
+}
+
+// ── Format helpers ──
+function fmt(prefix, suffix) {
+  const ta = document.getElementById('editor');
+  const s = ta.selectionStart, e = ta.selectionEnd;
+  const sel = ta.value.substring(s, e);
+  const replacement = prefix + (sel || 'text') + suffix;
+  ta.setRangeText(replacement, s, e, 'select');
+  ta.focus();
+  updatePreview(); updateWordCount();
+}
+
+function fmtLine(prefix) {
+  const ta = document.getElementById('editor');
+  const pos = ta.selectionStart;
+  const lineStart = ta.value.lastIndexOf('\n', pos-1) + 1;
+  const lineEnd = ta.value.indexOf('\n', pos);
+  const end = lineEnd === -1 ? ta.value.length : lineEnd;
+  const line = ta.value.substring(lineStart, end);
+  const newLine = line.startsWith(prefix) ? line.slice(prefix.length) : prefix + line;
+  ta.setRangeText(newLine, lineStart, end, 'end');
+  ta.focus();
+  updatePreview(); updateWordCount();
+}
+
+function insertBlock(block) {
+  const ta = document.getElementById('editor');
+  const pos = ta.selectionStart;
+  ta.setRangeText(block, pos, pos, 'end');
+  ta.focus();
+  updatePreview(); updateWordCount();
+}
+
+function insertLink() {
+  const url = prompt('URL:', 'https://');
+  if (!url) return;
+  const ta = document.getElementById('editor');
+  const s = ta.selectionStart, e = ta.selectionEnd;
+  const text = ta.value.substring(s, e) || 'link text';
+  ta.setRangeText(`[${text}](${url})`, s, e, 'end');
+  ta.focus();
+  updatePreview(); updateWordCount();
+}
+
+// ── Load .md file ──
+function loadMdFile() { document.getElementById('md-file-input').click(); }
+function handleMdLoad(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const md = e.target.result;
+    document.getElementById('editor').value = md;
+    // Extract title from first h1
+    const tm = md.match(/^#\s+(.+)/m);
+    if (tm) document.getElementById('f-title').value = tm[1].replace(/\*/g,'').trim();
+    // Set ID from filename
+    const slug = file.name.replace(/\.md$/i,'').replace(/\s+/g,'-').toLowerCase();
+    document.getElementById('f-id').value = slug;
+    updatePreview(); updateWordCount();
+    setStatus('loaded: ' + file.name);
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+
+// ── Save .md file ──
+function saveMdFile() {
+  const md = document.getElementById('editor').value;
+  if (!md.trim()) { setStatus('nothing to save'); return; }
+  const title = document.getElementById('f-title').value || 'post';
+  const slug = title.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+  const blob = new Blob([md], {type:'text/markdown'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = slug + '.md';
+  a.click();
+  setStatus('saved as ' + slug + '.md');
+}
+
+// ── Clear ──
+function clearAll() {
+  if (document.getElementById('editor').value && !confirm('Clear everything?')) return;
+  document.getElementById('editor').value = '';
+  document.getElementById('f-title').value = '';
+  document.getElementById('f-id').value = 'post-' + Date.now().toString(36).slice(-4);
+  document.getElementById('output-code').value = '';
+  updatePreview(); updateWordCount();
+  setStatus('cleared');
+}
+
+// ── Help modal ──
+function showHelp() { document.getElementById('help-modal').classList.add('show'); }
+function closeHelp() { document.getElementById('help-modal').classList.remove('show'); }
+
+// ── Status ──
+function setStatus(msg) {
+  document.getElementById('status-msg').textContent = msg;
+}
+
+// ── Utils ──
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Click outside modal to close ──
+document.getElementById('help-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeHelp();
+});
+</script>
+</body>
+</html>
