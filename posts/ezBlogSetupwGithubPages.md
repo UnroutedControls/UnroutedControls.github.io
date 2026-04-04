@@ -1,6 +1,6 @@
 ---
 title: HowTo Setup EZ Blog Posts w Github Actions & .md Files
-date: 04/03/26
+date: 04/04/26
 ---
 
 
