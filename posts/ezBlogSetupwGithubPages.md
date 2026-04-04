@@ -1,6 +1,6 @@
 ---
 title: HowTo Setup EZ Blog Posts w Github Actions & .md Files
-date: 04/03/26
+date: 04/04/26
 ---
 
 
@@ -456,5 +456,8 @@ Cost:                      $0.00
 
 > no logins. no dashboards. no subscriptions.
 > just a text file and a push.
+
+
+
 
 
