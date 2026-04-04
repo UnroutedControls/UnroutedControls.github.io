@@ -2,8 +2,10 @@ name: Publish BS Mail Post
 
 on:
   push:
+    branches:
+      - live
     paths:
-      - 'posts/**.md'   # only runs when a .md file is added/changed in posts/
+      - 'posts/**.md'
 
 permissions:
   contents: write       # needed to commit the updated brainstew.html back
@@ -44,4 +46,4 @@ jobs:
           git add brainstew.html
           # Only commit if something actually changed
           git diff --staged --quiet || git commit -m "📧 New BS Mail post published [skip ci]"
-          git push
+          git push origin live
