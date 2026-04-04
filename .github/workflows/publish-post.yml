@@ -1,0 +1,47 @@
+name: Publish BS Mail Post
+
+on:
+  push:
+    paths:
+      - 'posts/**.md'   # only runs when a .md file is added/changed in posts/
+
+permissions:
+  contents: write       # needed to commit the updated brainstew.html back
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history so we can diff
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Find new/changed markdown posts
+        id: find_posts
+        run: |
+          # Get list of .md files that were added or modified in this push
+          CHANGED=$(git diff --name-only --diff-filter=AM ${{ github.event.before }} ${{ github.sha }} -- 'posts/*.md' 2>/dev/null || git show --name-only --format="" ${{ github.sha }} -- 'posts/*.md')
+          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          echo "Files to process: $CHANGED"
+
+      - name: Patch brainstew.html
+        run: |
+          python3 .github/scripts/patch_brainstew.py "${{ steps.find_posts.outputs.changed_files }}"
+
+      - name: Commit and push updated brainstew.html
+        run: |
+          git config user.name  "BS Mail Bot"
+          git config user.email "bsmail@unroutedcontrols.bot"
+          git add brainstew.html
+          # Only commit if something actually changed
+          git diff --staged --quiet || git commit -m "📧 New BS Mail post published [skip ci]"
+          git push

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UC Games</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap');
+
+  :root {
+    --bg: #000080;
+    --text: #ffffff;
+    --lime: #00ff00;
+    --yellow: #FFCC00;
+    --cyan: #00ffff;
+    --magenta: #FF00FF;
+  }
+
+  * { box-sizing: border-box; margin:0; padding:0; }
+
+  body {
+    background-color: var(--bg);
+    background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,255,0.05) 10px, rgba(0,0,255,0.05) 20px);
+    color: var(--text);
+    font-family: 'VT323', monospace;
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Cpolygon points='0,0 0,16 4,12 8,20 10,19 6,11 12,11' fill='white' stroke='black' stroke-width='1'/%3E%3C/svg%3E"), auto;
+  }
+
+  a { color: var(--cyan); text-decoration: underline; }
+  a:hover { color: var(--yellow); }
+
+  /* Header */
+  .main-header {
+    background: #000;
+    border-bottom: 4px groove #808080;
+    text-align: center;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .site-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(14px, 4vw, 32px);
+    color: var(--lime);
+    text-shadow: 2px 2px 0 #005500,0 0 20px #00ff00,0 0 40px #00aa00;
+    letter-spacing: 4px;
+  }
+
+  .navbar {
+    background: #008080;
+    border-top: 3px ridge #c0c0c0;
+    border-bottom: 3px ridge #c0c0c0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2px;
+    padding: 4px;
+  }
+  .navbar a {
+    background: linear-gradient(180deg, #dfdfdf 0%, #c0c0c0 45%, #808080 100%);
+    color: #000;
+    text-decoration: none;
+    padding: 4px 12px;
+    border: 2px solid #fff;
+    display: inline-block;
+    font-family: 'VT323', monospace;
+    font-size: 16px;
+  }
+  .navbar a:hover { background: linear-gradient(180deg, #808080 0%, #c0c0c0 45%, #dfdfdf 100%); }
+
+  .page-wrapper { max-width: 960px; margin: 10px auto; padding: 10px; }
+
+  /* Games grid */
+  .game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-top: 10px;
+  }
+
+  .game-card {
+    background: #c0c0c0;
+    border: 2px outset #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 300px;
+    max-height: 360px;
+    overflow: hidden;
+    padding: 8px;
+    font-family: 'VT323', monospace;
+    font-size: 12px;
+    position: relative;
+    transition: transform 0.1s;
+  }
+  .game-card:hover { transform: translateY(-2px); border-color: #ff00ff; }
+
+  .game-card img {
+    max-width: 100%;
+    max-height: 220px;
+    object-fit: contain;
+    border: 1px solid #000;
+    margin-bottom: 6px;
+    image-rendering: pixelated;
+  }
+
+  .game-card-title {
+    text-align: center;
+    font-size: 14px;
+    font-family: 'Press Start 2P', monospace;
+    color: #000080;
+    margin-top: auto;
+  }
+
+  /* Win98 style window for embedded games */
+  .win98-game {
+    background: #c0c0c0;
+    border: 2px solid #fff;
+    padding: 6px;
+    margin-bottom: 12px;
+  }
+  .win98-title {
+    background: linear-gradient(90deg,#000080,#1084d0);
+    color: white;
+    font-family: 'VT323', monospace;
+    font-size: 14px;
+    padding: 2px 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .win98-body { padding: 6px; background: #c0c0c0; }
+
+  /* Marquee footer */
+  .bottom-bar {
+    background: #000;
+    border-top: 4px ridge #808080;
+    padding: 6px 0;
+    text-align: center;
+    overflow: hidden;
+  }
+  .bottom-bar span {
+    display: inline-block;
+    animation: marquee2 25s linear infinite;
+    color: var(--magenta);
+    font-family: 'VT323', monospace;
+    font-size: 16px;
+    white-space: nowrap;
+  }
+  @keyframes marquee2 { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
+
+  @media (max-width: 600px) {
+    .game-card { min-height: 260px; max-height: 300px; }
+  }
+
+</style>
+</head>
+<body>
+
+<div class="main-header">
+  <div class="site-title">UNROUTED CONTROLS<br>GAMES</div>
+</div>
+
+<nav class="navbar">
+  <a href="index.html">HOME</a>
+  <a href="#arcade">ARCADE</a>
+  <a href="#links">LINKS</a>
+  <a href="index.html">BACK</a>
+</nav>
+
+<div class="page-wrapper">
+
+  <h2 id="arcade" style="font-family:'Press Start 2P',monospace;color:var(--yellow);margin-bottom:8px;">RETRO ARCADE</h2>
+  
+  <div class="game-grid">
+
+    <!-- Example game card with image -->
+    <div class="game-card" onclick="window.open('https://scriptwelder.itch.io/waterworks', '_blank')">
+      <img src="https://img.itch.zone/aW1hZ2UvNTg1MDUzLzM3ODU2ODEucG5n/347x500/um2Pe2.png" alt="Game 1">
+      <div class="game-card-title">WaterWorks</div>
+    </div>
+
+    <!-- Example game card with embedded flash / iframe -->
+    <div class="game-card">
+      <div class="win98-game">
+        <div class="win98-title">PlaceHolder</div>
+        <div class="win98-body">
+        <iframe </iframe>
+        </div>
+      </div>
+      <div class="game-card-title">PlaceHolder</div>
+    </div>
+
+    <div class="game-card" onclick="window.open('https://example.com/game2', '_blank')">
+      <img src="images/game2.png" alt="Game 2">
+      <div class="game-card-title">Pixel Racer</div>
+    </div>
+
+    <div class="game-card" onclick="window.open('https://example.com/game3', '_blank')">
+      <img src="images/game3.png" alt="Game 3">
+      <div class="game-card-title">Block Builder</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="bottom-bar">
+  <span>★ PLAY SOME GAMES ★ ★ VISIT UC HQ OFTEN ★ ★ 2000's WEB VIBES ★</span>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UNROUTED CONTROLS :: welcome 2 my page!! V0.1</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&family=Special+Elite&family=Boogaloo&family=Kalam:wght@700&family=Russo+One&display=swap');
+
+  :root {
+    --bg: #000080;
+    --text: #ffffff;
+    --yellow: #FFCC00;
+    --cyan: #00ffff;
+    --magenta: #FFCC00;
+    --lime: #00ff00;
+    --red: #ff4444;
+    --silver: #c0c0c0;
+    --navy: #000080;
+    --teal: #008080;
+    --maroon: #800000;
+    --purple: #800080;
+    --link: #00ffff;
+    --visited: #ff00ff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--bg);
+    background-image: 
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(0,0,255,0.05) 10px,
+        rgba(0,0,255,0.05) 20px
+      );
+    color: var(--text);
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Cpolygon points='0,0 0,16 4,12 8,20 10,19 6,11 12,11' fill='white' stroke='black' stroke-width='1'/%3E%3C/svg%3E"), auto;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 16px; }
+  ::-webkit-scrollbar-track { background: #808080; border: 2px solid #000; }
+  ::-webkit-scrollbar-thumb { 
+    background: linear-gradient(135deg, #dfdfdf 0%, #808080 50%, #dfdfdf 100%);
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+  }
+
+  a { color: var(--cyan); text-decoration: underline; }
+  a:visited { color: var(--magenta); }
+  a:hover { color: var(--yellow); text-decoration: underline; }
+
+  .top-marquee {
+    background: var(--maroon);
+    border-bottom: 3px solid var(--yellow);
+    padding: 4px 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .top-marquee span {
+    display: inline-block;
+    animation: marquee 18s linear infinite;
+    color: var(--yellow);
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    letter-spacing: 2px;
+  }
+  @keyframes marquee {
+    0% { transform: translateX(100vw); }
+    100% { transform: translateX(-100%); }
+  }
+
+  .main-header {
+    background: #000000;
+    border-bottom: 4px groove #808080;
+    text-align: center;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .main-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,0,0.03) 2px, rgba(0,255,0,0.03) 4px);
+    pointer-events: none;
+  }
+  .site-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(14px, 4vw, 32px);
+    color: var(--lime);
+    text-shadow: 
+      2px 2px 0 #005500,
+      0 0 20px #00ff00,
+      0 0 40px #00aa00;
+    animation: glow 2s ease-in-out infinite alternate;
+    letter-spacing: 4px;
+  }
+  @keyframes glow {
+    from { text-shadow: 2px 2px 0 #005500, 0 0 10px #00ff00, 0 0 20px #00aa00; }
+    to   { text-shadow: 2px 2px 0 #005500, 0 0 30px #00ff00, 0 0 60px #00ff00, 0 0 80px #00cc00; }
+  }
+  .site-subtitle {
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    color: var(--cyan);
+    margin-top: 8px;
+    animation: blink-sub 3s step-end infinite;
+  }
+  @keyframes blink-sub {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .stars {
+    font-size: 24px;
+    color: var(--yellow);
+    display: inline-block;
+  }
+  .stars:first-of-type { animation: struggle-left 3.2s ease-in-out infinite; }
+  .stars:last-of-type  { animation: struggle-right 3.2s ease-in-out infinite; animation-delay: -1.1s; }
+  @keyframes struggle-left {
+    0%   { transform: rotate(0deg); animation-timing-function: cubic-bezier(0.4,0,1,0.2); }
+    18%  { transform: rotate(155deg); animation-timing-function: cubic-bezier(0,0.8,0.2,1); }
+    28%  { transform: rotate(168deg); animation-timing-function: cubic-bezier(0.8,0,0.4,1); }
+    38%  { transform: rotate(174deg); animation-timing-function: cubic-bezier(0,1,0.3,0.8); }
+    47%  { transform: rotate(178deg); animation-timing-function: cubic-bezier(1,0,0.5,0.5); }
+    52%  { transform: rotate(180deg); animation-timing-function: cubic-bezier(0.5,0,0,1); }
+    65%  { transform: rotate(22deg); animation-timing-function: cubic-bezier(0.2,0.8,0.6,1); }
+    80%  { transform: rotate(8deg); animation-timing-function: cubic-bezier(0.4,0,0.6,1); }
+    100% { transform: rotate(0deg); }
+  }
+  @keyframes struggle-right {
+    0%   { transform: rotate(0deg); animation-timing-function: cubic-bezier(0.4,0,1,0.2); }
+    18%  { transform: rotate(-155deg); animation-timing-function: cubic-bezier(0,0.8,0.2,1); }
+    28%  { transform: rotate(-168deg); animation-timing-function: cubic-bezier(0.8,0,0.4,1); }
+    38%  { transform: rotate(-174deg); animation-timing-function: cubic-bezier(0,1,0.3,0.8); }
+    47%  { transform: rotate(-178deg); animation-timing-function: cubic-bezier(1,0,0.5,0.5); }
+    52%  { transform: rotate(-180deg); animation-timing-function: cubic-bezier(0.5,0,0,1); }
+    65%  { transform: rotate(-22deg); animation-timing-function: cubic-bezier(0.2,0.8,0.6,1); }
+    80%  { transform: rotate(-8deg); animation-timing-function: cubic-bezier(0.4,0,0.6,1); }
+    100% { transform: rotate(0deg); }
+  }
+
+  .navbar {
+    background: var(--teal);
+    border-top: 3px ridge #c0c0c0;
+    border-bottom: 3px ridge #c0c0c0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2px;
+    padding: 4px;
+  }
+  .navbar a {
+    background: linear-gradient(180deg, #dfdfdf 0%, #c0c0c0 45%, #808080 100%);
+    color: #000000;
+    text-decoration: none;
+    padding: 4px 12px;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    display: inline-block;
+    letter-spacing: 1px;
+  }
+  .navbar a:visited { color: #000000; }
+  .navbar a:hover {
+    background: linear-gradient(180deg, #808080 0%, #c0c0c0 45%, #dfdfdf 100%);
+    border-color: #808080 #ffffff #ffffff #808080;
+    color: #000000;
+  }
+  .navbar a:active { border-color: #808080 #ffffff #ffffff #808080; }
+
+  .page-wrapper { max-width: 960px; margin: 0 auto; padding: 10px; }
+  .two-col { display: grid; grid-template-columns: 180px 1fr; gap: 10px; margin-top: 10px; }
+
+  .win98 {
+    background: #c0c0c0;
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    color: #000000;
+    min-width: 0;
+    width: 100%;
+  }
+  .win98-body.collapsed { display: none; }
+  .win98-title {
+    background: linear-gradient(90deg, #000080, #1084d0);
+    color: white;
+    font-family: 'VT323', monospace;
+    font-size: 16px;
+    padding: 2px 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    letter-spacing: 1px;
+    user-select: none;
+    width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+  .win98-title .btns { display: flex; gap: 2px; }
+  .win98-title .btn {
+    background: #c0c0c0;
+    color: #000;
+    border: 1px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    width: 16px; height: 14px;
+    font-size: 9px;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1;
+    font-family: 'VT323', monospace;
+    cursor: pointer;
+  }
+  .win98-title .btn:active { border-color: #808080 #ffffff #ffffff #808080; }
+  .win98-body { padding: 8px; font-family: 'VT323', monospace; font-size: 16px; background: #c0c0c0; }
+  .win98-body p { margin-bottom: 6px; }
+
+  .badge-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .copy-btn {
+    background: #c0c0c0;
+    border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
+    font-family: 'VT323', monospace; font-size: 13px;
+    padding: 2px 7px; cursor: pointer; color: #000;
+    white-space: nowrap; letter-spacing: 0.5px; flex-shrink: 0;
+  }
+  .copy-btn:active { border-color: #808080 #ffffff #ffffff #808080; }
+  .copy-btn.copied { color: #008000; }
+  .badge-tutorial {
+    color: #ffffff; font-family: 'VT323', monospace; font-size: 13px;
+    padding: 5px 8px 0 8px; line-height: 1.5; text-shadow: 1px 1px 0 #000040;
+  }
+
+  .sidebar { display: flex; flex-direction: column; gap: 8px; }
+
+  .under-construction { text-align: center; padding: 10px 6px; }
+  .under-construction img { max-width: 100%; image-rendering: pixelated; }
+  .uc-text {
+    font-family: 'Press Start 2P', monospace; font-size: 8px; color: #ff0000;
+    animation: blink 0.8s step-end infinite; margin-top: 6px; line-height: 1.6;
+  }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  .hit-counter {
+    text-align: center; background: #000; color: var(--lime);
+    font-family: 'Press Start 2P', monospace; font-size: 11px;
+    padding: 8px 4px; border: 2px inset #808080; letter-spacing: 2px;
+  }
+  .counter-digits { font-size: 20px; color: var(--lime); letter-spacing: 4px; display: block; margin-top: 4px; text-shadow: 0 0 8px #00ff00; }
+
+  .link-list a {
+    display: block; font-size: 15px; color: #000080; text-decoration: none;
+    padding: 1px 2px; border-bottom: 1px dotted #808080;
+  }
+  .link-list a:visited { color: #800080; }
+  .link-list a::before { content: '► '; color: #ff0000; }
+  .link-list a:hover { background: #000080; color: #fff; }
+
+  .mood-ring { text-align: center; padding: 6px; }
+  .mood-emoji { font-size: 36px; animation: bounce 1s ease-in-out infinite; }
+  @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  .mood-text { font-size: 14px; color: #800000; }
+
+  .main-content { display: flex; flex-direction: column; gap: 8px; min-width: 0; width: 100%; }
+
+  .welcome-box {
+    background: #000000; border: 2px solid var(--lime);
+    padding: 12px; font-family: 'VT323', monospace; color: var(--lime);
+    font-size: 20px; line-height: 1.5; box-shadow: inset 0 0 20px rgba(0,255,0,0.1);
+  }
+  .welcome-box h2 { font-family: 'Press Start 2P', monospace; font-size: 12px; color: var(--yellow); margin-bottom: 10px; }
+  .cursor-blink::after { content: '\u2588'; animation: blink 0.6s step-end infinite; }
+
+  .about-section { font-size: 16px; line-height: 1.6; }
+  .about-section h3 {
+    font-family: 'Press Start 2P', monospace; font-size: 9px; color: #800000;
+    border-bottom: 2px solid #808080; padding-bottom: 3px; margin-bottom: 6px;
+  }
+
+  .interests-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; font-size: 14px; }
+  .interest-box {
+    background: #000080; color: var(--yellow); padding: 6px; text-align: center;
+    border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff; font-size: 13px;
+  }
+  .interest-box:hover { background: var(--maroon); cursor: pointer; }
+
+  .update-entry { border-bottom: 1px dashed #808080; padding: 6px 0; font-size: 15px; }
+  .update-date { color: #ff0000; font-weight: bold; font-size: 14px; }
+
+  .guestbook-entry { background: #ffffff; border: 1px solid #808080; padding: 6px; margin-bottom: 6px; font-size: 14px; color: #000; }
+  .gb-name { color: #000080; font-weight: bold; font-size: 16px; }
+  .gb-date { color: #808080; font-size: 12px; float: right; }
+  .gb-msg { margin-top: 4px; }
+
+  input[type=text], textarea {
+    border: 2px solid; border-color: #808080 #ffffff #ffffff #808080;
+    background: #ffffff; padding: 4px; font-family: 'VT323', monospace;
+    font-size: 16px; width: 100%; color: #000; margin-bottom: 4px;
+  }
+  button.submit-btn {
+    background: #c0c0c0; border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
+    font-family: 'VT323', monospace; font-size: 18px; padding: 4px 16px;
+    cursor: pointer; color: #000; letter-spacing: 1px;
+  }
+  button.submit-btn:hover { background: #a0a0a0; }
+  button.submit-btn:active { border-color: #808080 #ffffff #ffffff #808080; }
+
+  .music-player { background: #000; border: 2px solid var(--cyan); padding: 8px; font-family: 'VT323', monospace; color: var(--cyan); font-size: 16px; }
+  .now-playing { overflow: hidden; white-space: nowrap; border: 1px inset #808080; background: #000; padding: 2px 4px; margin-bottom: 6px; }
+  .now-playing span { display: inline-block; animation: marquee 12s linear infinite; color: var(--lime); font-size: 16px; }
+  .player-btns { display: flex; gap: 4px; flex-wrap: wrap; }
+  .player-btn {
+    background: #c0c0c0; border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
+    color: #000; font-family: 'VT323', monospace; font-size: 18px; padding: 2px 10px; cursor: pointer; letter-spacing: 1px;
+  }
+
+  .badges { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px; }
+  .badge {
+    display: inline-block; width: 88px; height: 31px;
+    font-family: 'Press Start 2P', monospace; font-size: 5px;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; border: 1px solid #000; line-height: 1.5; letter-spacing: 0.5px; padding: 2px;
+  }
+  .badge-1 {
+    background: #000008; color: #fff; position: relative; overflow: hidden;
+    font-size: 6px; letter-spacing: 1px; justify-content: flex-start; align-items: flex-start; padding: 3px 4px;
+  }
+  .badge-1 .badge-label {
+    position: relative; z-index: 2; color: #ff00ff;
+    text-shadow: 0 0 4px #ff00ff, 0 0 10px #ff00ff, 0 0 18px #ff44ff;
+    font-size: 6.5px; letter-spacing: 1.5px; line-height: 1.2;
+  }
+  .badge-1::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='31'%3E%3Cdefs%3E%3Cfilter id='g'%3E%3CfeGaussianBlur stdDeviation='0.8' result='blur'/%3E%3CfeMerge%3E%3CfeMergeNode in='blur'/%3E%3CfeMergeNode in='SourceGraphic'/%3E%3C/feMerge%3E%3C/filter%3E%3C/defs%3E%3Crect width='88' height='31' fill='%23000008'/%3E%3Cg filter='url(%23g)'%3E%3Crect x='2' y='18' width='7' height='13' fill='%23220033'/%3E%3Crect x='2' y='18' width='7' height='1' fill='%23ff00ff'/%3E%3Crect x='3' y='20' width='2' height='2' fill='%23ff00ff' opacity='0.7'/%3E%3Crect x='6' y='20' width='2' height='2' fill='%23ff00ff' opacity='0.4'/%3E%3Crect x='3' y='23' width='2' height='2' fill='%23ff00ff' opacity='0.6'/%3E%3Crect x='10' y='22' width='5' height='9' fill='%23001a22'/%3E%3Crect x='10' y='22' width='5' height='1' fill='%2300ffff'/%3E%3Crect x='11' y='24' width='1' height='1' fill='%2300ffff' opacity='0.8'/%3E%3Crect x='13' y='24' width='1' height='1' fill='%2300ffff' opacity='0.5'/%3E%3Crect x='16' y='10' width='9' height='21' fill='%23110022'/%3E%3Crect x='16' y='10' width='9' height='1' fill='%23ff00ff'/%3E%3Crect x='20' y='8' width='1' height='3' fill='%23ff0044'/%3E%3Crect x='17' y='12' width='2' height='2' fill='%23ff00ff' opacity='0.6'/%3E%3Crect x='21' y='12' width='2' height='2' fill='%23ff00ff' opacity='0.3'/%3E%3Crect x='17' y='16' width='2' height='2' fill='%2300ffff' opacity='0.5'/%3E%3Crect x='21' y='16' width='2' height='2' fill='%23ff00ff' opacity='0.7'/%3E%3Crect x='17' y='20' width='2' height='2' fill='%23ff00ff' opacity='0.4'/%3E%3Crect x='21' y='20' width='2' height='2' fill='%2300ffff' opacity='0.6'/%3E%3Crect x='26' y='16' width='6' height='15' fill='%23001a00'/%3E%3Crect x='26' y='16' width='6' height='1' fill='%23FFCC00'/%3E%3Crect x='27' y='18' width='1' height='1' fill='%23FFCC00' opacity='0.8'/%3E%3Crect x='29' y='18' width='1' height='1' fill='%23FFCC00' opacity='0.5'/%3E%3Crect x='27' y='21' width='1' height='1' fill='%23FFCC00' opacity='0.6'/%3E%3Crect x='33' y='6' width='8' height='25' fill='%23000033'/%3E%3Crect x='33' y='6' width='8' height='1' fill='%2300ffff'/%3E%3Crect x='36' y='4' width='2' height='3' fill='%23ff0044'/%3E%3Crect x='34' y='8' width='2' height='2' fill='%2300ffff' opacity='0.7'/%3E%3Crect x='38' y='8' width='2' height='2' fill='%2300ffff' opacity='0.4'/%3E%3Crect x='34' y='12' width='2' height='2' fill='%23ff00ff' opacity='0.6'/%3E%3Crect x='38' y='12' width='2' height='2' fill='%2300ffff' opacity='0.8'/%3E%3Crect x='34' y='16' width='2' height='2' fill='%2300ffff' opacity='0.5'/%3E%3Crect x='38' y='16' width='2' height='2' fill='%23ff00ff' opacity='0.4'/%3E%3Crect x='34' y='20' width='2' height='2' fill='%23ff00ff' opacity='0.7'/%3E%3Crect x='42' y='19' width='5' height='12' fill='%23220011'/%3E%3Crect x='42' y='19' width='5' height='1' fill='%23ff00ff'/%3E%3Crect x='43' y='21' width='1' height='1' fill='%23ff00ff' opacity='0.6'/%3E%3Crect x='45' y='21' width='1' height='1' fill='%23ff00ff' opacity='0.4'/%3E%3Crect x='48' y='13' width='10' height='18' fill='%23001122'/%3E%3Crect x='48' y='13' width='10' height='1' fill='%2300ffff'/%3E%3Crect x='49' y='15' width='2' height='2' fill='%2300ffff' opacity='0.7'/%3E%3Crect x='53' y='15' width='2' height='2' fill='%2300ffff' opacity='0.3'/%3E%3Crect x='49' y='19' width='2' height='2' fill='%23ff00ff' opacity='0.5'/%3E%3Crect x='53' y='19' width='2' height='2' fill='%2300ffff' opacity='0.6'/%3E%3Crect x='49' y='23' width='2' height='2' fill='%2300ffff' opacity='0.4'/%3E%3Crect x='59' y='20' width='6' height='11' fill='%23110033'/%3E%3Crect x='59' y='20' width='6' height='1' fill='%23ff00ff'/%3E%3Crect x='60' y='22' width='1' height='1' fill='%23ff00ff' opacity='0.6'/%3E%3Crect x='63' y='22' width='1' height='1' fill='%23ff00ff' opacity='0.4'/%3E%3Crect x='66' y='15' width='8' height='16' fill='%23001a11'/%3E%3Crect x='66' y='15' width='8' height='1' fill='%23FFCC00'/%3E%3Crect x='67' y='17' width='2' height='2' fill='%23FFCC00' opacity='0.6'/%3E%3Crect x='71' y='17' width='2' height='2' fill='%23FFCC00' opacity='0.4'/%3E%3Crect x='67' y='21' width='2' height='2' fill='%23FFCC00' opacity='0.7'/%3E%3Crect x='75' y='22' width='5' height='9' fill='%23220022'/%3E%3Crect x='75' y='22' width='5' height='1' fill='%23ff00ff'/%3E%3Crect x='76' y='24' width='1' height='1' fill='%23ff00ff' opacity='0.5'/%3E%3Crect x='81' y='17' width='6' height='14' fill='%23000033'/%3E%3Crect x='81' y='17' width='6' height='1' fill='%2300ffff'/%3E%3Crect x='82' y='19' width='2' height='2' fill='%2300ffff' opacity='0.6'/%3E%3Crect x='82' y='23' width='2' height='2' fill='%23ff00ff' opacity='0.4'/%3E%3Crect x='0' y='30' width='88' height='1' fill='%23ff00ff' opacity='0.4'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 100% 100%; opacity: 0.9;
+  }
+  .badge-2 { background: #008000; color: #ffffff; }
+  .badge-3 { background: #800000; color: var(--yellow); }
+  .badge-4 { background: transparent; border: none; padding: 0; }
+  .badge-5 { background: transparent; border: none; padding: 0; }
+
+  .bottom-bar { background: #000; border-top: 4px ridge #808080; padding: 6px 0; text-align: center; overflow: hidden; }
+  .bottom-bar span {
+    display: inline-block; animation: marquee2 25s linear infinite;
+    color: var(--magenta); font-family: 'VT323', monospace; font-size: 18px; white-space: nowrap; letter-spacing: 2px;
+  }
+  @keyframes marquee2 { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
+
+  footer { background: #000000; color: var(--silver); text-align: center; padding: 10px; font-family: 'VT323', monospace; font-size: 15px; border-top: 4px ridge #808080; }
+  footer p { margin-bottom: 4px; }
+  .best-viewed { font-size: 13px; color: #808080; }
+
+  .popup-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+  .popup { background: #c0c0c0; border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff; min-width: 280px; max-width: 360px; box-shadow: 4px 4px 0 #000; }
+  .popup-title { background: linear-gradient(90deg, #000080, #1084d0); color: white; font-family: 'VT323', monospace; font-size: 16px; padding: 3px 8px; display: flex; justify-content: space-between; align-items: center; letter-spacing: 1px; }
+  .popup-close { background: #c0c0c0; color: #000; border: 1px solid; border-color: #ffffff #808080 #808080 #ffffff; width: 18px; height: 16px; font-size: 10px; cursor: pointer; font-family: 'VT323', monospace; display: flex; align-items: center; justify-content: center; }
+  .popup-body { padding: 16px; font-family: 'VT323', monospace; font-size: 18px; text-align: center; color: #000; }
+  .popup-icon { font-size: 40px; margin-bottom: 8px; }
+  .popup-btns { display: flex; gap: 8px; justify-content: center; margin-top: 12px; }
+  .popup-btn { background: #c0c0c0; border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff; font-family: 'VT323', monospace; font-size: 18px; padding: 4px 20px; cursor: pointer; color: #000; min-width: 80px; }
+  .popup-btn:active { border-color: #808080 #ffffff #ffffff #808080; }
+
+  hr.retro { border: none; border-top: 4px groove #808080; margin: 8px 0; }
+
+  @media (max-width: 600px) {
+    .two-col { grid-template-columns: 1fr; }
+    .interests-grid { grid-template-columns: repeat(2, 1fr); }
+    .site-title { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="popup-overlay" id="popup">
+  <div class="popup">
+    <div class="popup-title">
+      <span>&#x26A0; IMPORTANT MESSAGE</span>
+      <button class="popup-close" onclick="document.getElementById('popup').remove()">&#x2715;</button>
+    </div>
+    <div class="popup-body">
+      <div class="popup-icon">&#x1F310;</div>
+      <p><strong>Welcome to UnroutedControls</strong></p>
+      <p>Make your <strong> very own</strong> neocity here -> <a href="https://neocities.org" target="_blank" style="color:#00ffff;">neocities.org</a> <br> and join the movement of taking back the internet.<br>DOWN WITH THE CLOUD</p>
+      <p>enjoy ur stay!! :)</p>
+      <div class="popup-btns">
+        <button class="popup-btn" onclick="document.getElementById('popup').remove()">OK</button>
+        <button class="popup-btn" onclick="document.getElementById('popup').remove()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="top-marquee">
+  <span>&#x2726; WELCOME 2 UNROUTED CONTROLS &#x2726; YOU ARE VISITOR #000420 &#x2726; THIS PAGE IS UNDER CONSTRUCTION &#x2726; DO NOT STEAL MY HTML &#x2726; LAST UPDATED: 02/22/26 &#x2726; SIGN MY GUESTBOOK!! &#x2726; BEST VIEWED 800x600 &#x2726; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+</div>
+
+<div class="main-header">
+  <div class="site-title">UNROUTED<br>CONTROLS</div>
+  <div class="site-subtitle">
+    <span class="stars">&#x2605;</span>
+    <a href="https://PathOfTheUnrouted.org" target="_blank" style="color: var(--cyan); text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">PathOfTheUnrouted.org</a>
+    <span class="stars">&#x2605;</span>
+  </div>
+  <p style="font-size:15px; margin-top:8px; color: var(--silver);">[ est. 2025 | neocities | &lt;3 ]</p>
+</div>
+
+<nav class="navbar">
+  <a href="#home">HOME</a>
+  <a href="#about">ABOUT</a>
+  <a href="#interests">INTERESTS</a>
+  <a href="#updates">UPDATES</a>
+  <a href="#guestbook">GUESTBOOK</a>
+  <a href="#links">LINKS</a>
+  <a href="#music">MUSIC</a>
+  <a href="brainstew.html" style="background:linear-gradient(180deg,#ffee88 0%,#ffcc00 45%,#cc8800 100%);border-color:#ffff88 #886600 #886600 #ffff88;color:#000;">&#x1F9E0; BRAIN STEW</a>
+</nav>
+
+<div class="page-wrapper">
+<div class="two-col">
+
+  <aside class="sidebar">
+
+    <div class="win98">
+      <div class="win98-title">
+        <span>notice.exe</span>
+        <div class="btns"><div class="btn" onclick="toggleWin(this)">_</div><div class="btn" onclick="toggleWin(this)">&#x25A1;</div><div class="btn">&#x2715;</div></div>
+      </div>
+      <div class="win98-body under-construction">
+        <svg width="80" height="60" viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+          <rect x="5" y="40" width="70" height="12" fill="#ffcc00" rx="2"/>
+          <rect x="5" y="40" width="14" height="12" fill="#000"/>
+          <rect x="33" y="40" width="14" height="12" fill="#000"/>
+          <rect x="61" y="40" width="14" height="12" fill="#000"/>
+          <polygon points="40,5 20,38 60,38" fill="#ff6600"/>
+          <text x="40" y="30" font-size="14" fill="black" text-anchor="middle" font-family="monospace">!</text>
+        </svg>
+        <div class="uc-text">!! UNDER<br>CONSTRUCTION !!</div>
+      </div>
+    </div>
+
+    <div class="win98">
+      <div class="win98-title">
+        <span>visitors.exe</span>
+        <div class="btns"><div class="btn" onclick="toggleWin(this)">_</div><div class="btn" onclick="toggleWin(this)">&#x25A1;</div><div class="btn">&#x2715;</div></div>
+      </div>
+      <div class="win98-body hit-counter">
+        YOU ARE VISITOR
+        <span class="counter-digits" id="counter">000420</span>
+      </div>
+    </div>
+
+    <div class="win98">
+      <div class="win98-title">
+        <span>mood.txt</span>
+        <div class="btns"><div class="btn" onclick="toggleWin(this)">_</div><div class="btn" onclick="toggleWin(this)">&#x25A1;</div><div class="btn">&#x2715;</div></div>
+      </div>
+      <div class="win98-body mood-ring">
+        <div class="mood-emoji" id="moodEmoji">&#x1F60E;</div>
+        <div class="mood-text">current mood: <strong id="moodText">vibing</strong></div>
+      </div>
+    </div>
+
+    <div class="win98" id="links">
+      <div class="win98-title">
+        <span>cool links!!</span>
+        <div class="btns"><div class="btn" onclick="toggleWin(this)">_</div><div class="btn" onclick="toggleWin(this)">&#x25A1;</div><div class="btn">&#x2715;</div></div>
+      </div>
+      <div class="win98-body link-list">
+        <a href="https://pathoftheunrouted.org/"target="_blank">Another Link to PathOfTheUnrouted</a>
+       
+        <a href="https://github.com/bayandin/awesome-awesomeness?tab=readme-ov-file"target="_blank">awesome-awesomeness Index</a>
+        <a href="https://archive.org/"target="_blank">internet archive</a>
+        <a href="https://neocities.org/"target="_blank">neocities home</a>
+        <a href="#">webring!</a>
+        
+         <a href="https://www.youtube.com/@MoreCrowns"target="_blank">One of my fav FiveM Trolls</a>
+        <a href="https://www.youtube.com/@bigcheefer"target="_blank">The Other One</a>
+      </div>
+    </div>
+
+    <div class="win98">
+      <div class="win98-title">
+        <span>badges!!</span>
+        <div class="btns">
+          <div class="btn" onclick="toggleWin(this)">_</div>
+          <div class="btn" onclick="toggleWin(this)">&#x25A1;</div>
+        </div>
+      </div>
+      <div class="win98-body">
+        <div class="badge-row">
+          <div class="badge badge-1"><span class="badge-label">NEOCITIES</span></div>
+          <button class="copy-btn" onclick="copyBadge(this, 'badge-1')">&#x1F4CB; copy</button>
+        </div>
+        <div class="badge-row">
+          <div class="badge badge-2">HTML IS NOT DEAD</div>
+          <button class="copy-btn" onclick="copyBadge(this, 'badge-2')">&#x1F4CB; copy</button>
+        </div>
+        <div class="badge-row">
+          <div class="badge badge-3">NO ADS EVER!!</div>
+          <button class="copy-btn" onclick="copyBadge(this, 'badge-3')">&#x1F4CB; copy</button>
+        </div>
+        <div class="badge-row">
+          <div class="badge badge-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="88" height="31" viewBox="0 0 88 31">
+              <defs><filter id="gglow"><feGaussianBlur stdDeviation="0.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+              <rect width="88" height="31" fill="#0a0a0a"/>
+              <rect width="88" height="31" fill="none" stroke="#00ff00" stroke-width="1"/>
+              <ellipse cx="16" cy="20" rx="9" ry="10" fill="#111"/>
+              <ellipse cx="16" cy="21" rx="5.5" ry="7" fill="#fffde0"/>
+              <ellipse cx="16" cy="8" rx="7" ry="7" fill="#111"/>
+              <ellipse cx="16" cy="9" rx="4" ry="4.5" fill="#fffde0"/>
+              <circle cx="13.5" cy="7" r="1.8" fill="white"/>
+              <circle cx="13.8" cy="7.2" r="1" fill="#111"/>
+              <circle cx="13.3" cy="6.8" r="0.4" fill="white"/>
+              <circle cx="18.5" cy="7" r="1.8" fill="white"/>
+              <circle cx="18.8" cy="7.2" r="1" fill="#111"/>
+              <circle cx="18.3" cy="6.8" r="0.4" fill="white"/>
+              <ellipse cx="16" cy="11" rx="2.5" ry="1.5" fill="#ff9900"/>
+              <ellipse cx="11" cy="29" rx="4" ry="2" fill="#ff9900" transform="rotate(-15 11 29)"/>
+              <ellipse cx="21" cy="29" rx="4" ry="2" fill="#ff9900" transform="rotate(15 21 29)"/>
+              <ellipse cx="7" cy="20" rx="3" ry="8" fill="#111" transform="rotate(-10 7 20)"/>
+              <ellipse cx="25" cy="20" rx="3" ry="8" fill="#111" transform="rotate(10 25 20)"/>
+              <line x1="33" y1="2" x2="33" y2="29" stroke="#00ff00" stroke-width="0.5" opacity="0.6"/>
+              <text x="60" y="13" font-family="'Press Start 2P',monospace" font-size="5" fill="#00ff00" text-anchor="middle" filter="url(#gglow)">LINUX</text>
+              <text x="60" y="23" font-family="'Press Start 2P',monospace" font-size="5" fill="#00ff00" text-anchor="middle" filter="url(#gglow)">NOW</text>
+            </svg>
+          </div>
+          <button class="copy-btn" onclick="copyBadge(this, 'badge-4')">&#x1F4CB; copy</button>
+        </div>
+        <div class="badge-row">
+          <div class="badge badge-5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="88" height="31" viewBox="0 0 88 31">
+              <defs>
+                <linearGradient id="bgB" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#1a0000"/>
+                  <stop offset="100%" stop-color="#0a0010"/>
+                </linearGradient>
+              </defs>
+              <rect width="88" height="31" fill="url(#bgB)"/>
+              <rect width="88" height="31" fill="none" stroke="#ff3300" stroke-width="1.2"/>
+              <circle cx="16" cy="15.5" r="11" fill="none" stroke="#ff3300" stroke-width="1.5"/>
+              <circle cx="13" cy="16" r="3.5" fill="#4488bb"/>
+              <circle cx="17" cy="13.5" r="4" fill="#4488bb"/>
+              <circle cx="21" cy="16" r="3.5" fill="#4488bb"/>
+              <rect x="9.5" y="16" width="15" height="4" fill="#4488bb"/>
+              <line x1="7" y1="6" x2="25" y2="25" stroke="#ff3300" stroke-width="2" stroke-linecap="round"/>
+              <text x="57" y="13" font-family="'Russo One',sans-serif" font-size="7.5" fill="#ffffff" text-anchor="middle" letter-spacing="0.2">DOWN WITH</text>
+              <text x="57" y="23" font-family="'Russo One',sans-serif" font-size="7.5" fill="#ff3300" text-anchor="middle" letter-spacing="0.2">THE CLOUD</text>
+            </svg>
+          </div>
+          <button class="copy-btn" onclick="copyBadge(this, 'badge-5')">&#x1F4CB; copy</button>
+        </div>
+      </div>
+    </div>
+    <div class="badge-tutorial">
+      &#x1F4A1; <strong>add a badge 2 ur site:</strong><br>
+      click &#x1F4CB; copy next to any badge &#x2014; it copies a ready-to-paste &lt;img&gt; tag with the badge baked in as a data URL. just paste it anywhere in ur HTML and it'll show up instantly, no hotlinking needed!!
+    </div>
+
+  </aside>
+
+  <main class="main-content" id="home">
+
+    <div class="welcome-box">
+      <h2>// WELCOME.TXT</h2>
+      <p>C:\&gt; <span class="cursor-blink">Access Granted...</span></p>
+      <p>Hello, I am <span style="color:var(--yellow)">UnroutedControls</span> and this is MY website.</p>
+      <p>Everything from robotics to literary review to phiolosophy.</p>
+      <p>feel free to look around and sign my guestbook if u want to.</p>
+      <p style="color:var(--magenta)">&#x2665; thx 4 coming along &#x2665;</p>
+    </div>
+
+    <div class="win98" id="about">
+      <div class="win98-title">
+        <span>about_me.html</span>
+        <div class="btns"><div class="btn" onclick="toggleWin(this)">_</div><div class="btn" onclick="toggleWin(this)">&#x25A1;</div><div class="btn">&#x2715;</div></div>
+      </div>
+      <div class="win98-body about-section">
+        <h3>:: ABOUT ME ::</h3>
+        <p>hELLO I am <strong>UnroutedControls</strong> or <strong>UC</strong> for short, a person who is on the internet probably too much lol</p>
+        <p>youll find documentation of all my projects here in the BS (BrainStew), top right of your screen. <br> You will find a wide range of posts including: <br> game reviews, robotics showcases, open source software, literary review and more!</p>
+        <p>&#x1F1FA;&#x1F1F8; USA | timezone: somewhere | hobbies: see below!!</p>
+        <hr class="retro">
+        <h3 id="interests">:: INTERESTS ::</h3>
+        <div class="interests-grid">
+          <div class="interest-box">&#x1F3AE;<br>GAMING</div>
+          <div class="interest-box">&#x1F4BB;<br>CODING</div>
+          <div class="interest-box">&#x2699;&#xFE0F;<br>AUTOMATION</div>
+          <div class="interest-box">&#x1F50C;<br>ELECTRONICS</div>
+          <div class="interest-box">&#x1F310;<br>OLD WEB</div>
+          <div class="interest-box">&#x1F5A5;&#xFE0F;<br>HOMELABBING</div>
+          <div class="interest-box">&#x1F916;<br>ROBOTICS</div>
+          <div class="interest-box">&#x1F4DA;<br>BOOKS</div>
+          <div class="interest-box">&#x2753;<br>SPARE SLOT</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="win98" id="music">
+      <div class="win98-title">
+        <span>winamp.exe - my playlist</span>
+        <div class="btns"><div class="btn" onclick="toggleWin(this)">_</div><div class="btn" onclick="toggleWin(this)">&#x25A1;</div><div class="btn">&#x2715;</div></div>
+      </div>
+      <div class="win98-body">
+        <div class="music-player">
+          <div style="color:var(--cyan); font-size:14px; margin-bottom:4px;">&#x266B; NOW PLAYING:</div>
+          <div class="now-playing">
+            <span id="nowPlaying">01. [some really good song] - [cool artist] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 02. [another banger] - [that one band] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 03. [vibes only] - [mysterious entity]</span>
+          </div>
+          <div class="player-btns">
+            <button class="player-btn">|&#x25C4;&#x25C4;</button>
+            <button class="player-btn">&#x25BA;</button>
+            <button class="player-btn" id="playBtn" onclick="togglePlay()">&#x275A;&#x275A;</button>
+            <button class="player-btn">&#x25A0;</button>
+            <button class="player-btn">&#x25BA;&#x25BA;|</button>
+            <span style="color:var(--lime); font-size:16px; padding: 2px 6px;">VOL: &#x2588;&#x2588;&#x2588;&#x2588;&#x2591;&#x2591;</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="win98" id="updates">
+      <div class="win98-title">
+        <span>updates_log.txt</span>
+        <div class="btns"><div class="btn" onclick="toggleWin(this)">_</div><div class="btn" onclick="toggleWin(this)">&#x25A1;</div><div class="btn">&#x2715;</div></div>
+      </div>
+      <div class="win98-body">
+        <h3 class="about-section" style="margin-bottom:8px;">:: SITE UPDATES ::</h3>
+        <div class="update-entry">
+          <span class="update-date">02/22/26</span> &#x2014; launched the site!! hello world!! added guestbook + music player. site is VERY wip lol
+        </div>
+        <div class="update-entry">
+          <span class="update-date">02/20/26</span> &#x2014; started coding this whole thing from scratch. said goodbye to my wordpress. good riddance
+        </div>
+        <div class="update-entry">
+          <span class="update-date">02/15/26</span> &#x2014; discovered neocities. my life has been changed forever.
+        </div>
+        <div class="update-entry">
+          <span class="update-date">01/01/26</span> &#x2014; new year!! decided i want my own lil website again. this will be my year probably
+        </div>
+      </div>
+    </div>
+
+    <div class="win98" id="guestbook">
+      <div class="win98-title">
+        <span>guestbook.cgi</span>
+        <div class="btns"><div class="btn" onclick="toggleWin(this)">_</div><div class="btn" onclick="toggleWin(this)">&#x25A1;</div><div class="btn">&#x2715;</div></div>
+      </div>
+      <div class="win98-body">
+        <h3 class="about-section" style="margin-bottom:8px;">:: SIGN MY GUESTBOOK!! ::</h3>
+        <div id="gb-entries">
+          <div class="guestbook-entry">
+            <span class="gb-name">&#x1F31F; webmaster_dan</span><span class="gb-date">02/22/26</span>
+            <div class="gb-msg">cool site!! love the retro vibes. keep up the good work!! :)</div>
+          </div>
+          <div class="guestbook-entry">
+            <span class="gb-name">&#x1F380; pixel_witch_99</span><span class="gb-date">02/22/26</span>
+            <div class="gb-msg">found u thru the neocities webring!! ur site is so cute omg. signed from my site at pixelwitch99.neocities.org!!</div>
+          </div>
+          <div class="guestbook-entry">
+            <span class="gb-name">&#x1F4BE; roscoe_fm</span><span class="gb-date">02/21/26</span>
+            <div class="gb-msg">the internet is finally good again because of sites like this!! bookmarked!!</div>
+          </div>
+        </div>
+        <hr class="retro">
+        <p style="color:#800000; font-size:16px; margin-bottom:6px;"><strong>leave a message!!</strong></p>
+        <input type="text" id="gb-name" placeholder="ur name / handle" maxlength="30">
+        <textarea id="gb-msg" rows="3" placeholder="say something nice!! :)" style="resize:vertical;"></textarea>
+        <button class="submit-btn" onclick="addGuestbookEntry()">&#x25BA; SIGN GUESTBOOK</button>
+        <div id="gb-confirm" style="color:#008000; font-family:'VT323',monospace; font-size:16px; margin-top:4px; display:none;">
+          &#x2713; entry added!! thankies for signing!! &lt;3
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+</div>
+
+<div class="bottom-bar">
+  <span>~ this site is handcoded with &#x2665; and too much caffeine ~ hosted on neocities ~ no cookies, no tracking, no nonsense ~ steal my code i dare u ~ netscape navigator 4ever ~ &nbsp;&nbsp;&nbsp;</span>
+</div>
+
+<footer>
+  <p>&#xa9; 2026 UNROUTED CONTROLS :: all rights reserved (not really)</p>
+  <p>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Ccircle cx='5' cy='5' r='4' fill='%23ff0000'/%3E%3C/svg%3E" alt="">
+    made with NOTEPAD.EXE on WINDOWS XP
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Ccircle cx='5' cy='5' r='4' fill='%230000ff'/%3E%3C/svg%3E" alt="">
+  </p>
+  <p class="best-viewed">
+    &#x2726; Take back the web from big tech. &#x2726;<br>
+    &#x2726; create your own site w/ free hosting! &#x2726; go to <a href="https://neocities.org" target="_blank" style="color:#00ffff;">neocities.org</a> - DOWN WITH THE CLOUD &#x2726;
+  </p>
+  <p style="margin-top:8px;">
+    <a href="#">[ home ]</a> |
+    <a href="#">[ about ]</a> |
+    <a href="#">[ guestbook ]</a> |
+    <a href="#">[ email me ]</a>
+  </p>
+</footer>
+
+<script>
+  function toggleWin(btn) {
+    const titleBar = btn.closest('.win98-title');
+    const panel    = titleBar.closest('.win98');
+    const body     = panel.querySelector('.win98-body');
+    if (!body) return;
+    body.classList.toggle('collapsed');
+  }
+
+  const badgeSnippets = {
+    'badge-1': `<div style="display:inline-flex;align-items:center;justify-content:flex-start;width:88px;height:31px;background:#000008;border:1px solid #000;position:relative;overflow:hidden;padding:3px 4px;font-family:'Press Start 2P',monospace;box-sizing:border-box;"><span style="position:relative;z-index:2;color:#ff00ff;text-shadow:0 0 4px #ff00ff,0 0 10px #ff00ff,0 0 18px #ff44ff;font-size:6.5px;letter-spacing:1.5px;line-height:1.2;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='31'%3E%3Crect width='88' height='31' fill='%23000008'/%3E%3Crect x='2' y='18' width='7' height='13' fill='%23220033'/%3E%3Crect x='2' y='18' width='7' height='1' fill='%23ff00ff'/%3E%3Crect x='10' y='22' width='5' height='9' fill='%23001a22'/%3E%3Crect x='10' y='22' width='5' height='1' fill='%2300ffff'/%3E%3Crect x='16' y='10' width='9' height='21' fill='%23110022'/%3E%3Crect x='16' y='10' width='9' height='1' fill='%23ff00ff'/%3E%3Crect x='33' y='6' width='8' height='25' fill='%23000033'/%3E%3Crect x='33' y='6' width='8' height='1' fill='%2300ffff'/%3E%3Crect x='48' y='13' width='10' height='18' fill='%23001122'/%3E%3Crect x='48' y='13' width='10' height='1' fill='%2300ffff'/%3E%3Crect x='66' y='15' width='8' height='16' fill='%23001a11'/%3E%3Crect x='66' y='15' width='8' height='1' fill='%23FFCC00'/%3E%3Crect x='75' y='22' width='5' height='9' fill='%23220022'/%3E%3Crect x='81' y='17' width='6' height='14' fill='%23000033'/%3E%3Crect x='81' y='17' width='6' height='1' fill='%2300ffff'/%3E%3C/svg%3E&quot;);background-size:100% 100%;background-repeat:no-repeat;">NEOCITIES</span></div>`,
+    'badge-2': `<div style="display:inline-flex;align-items:center;justify-content:center;width:88px;height:31px;background:#008000;border:1px solid #000;font-family:'Press Start 2P',monospace;font-size:5px;color:#ffffff;text-align:center;padding:2px;box-sizing:border-box;letter-spacing:0.5px;line-height:1.5;">HTML IS NOT DEAD</div>`,
+    'badge-3': `<div style="display:inline-flex;align-items:center;justify-content:center;width:88px;height:31px;background:#800000;border:1px solid #000;font-family:'Press Start 2P',monospace;font-size:5px;color:#FFCC00;text-align:center;padding:2px;box-sizing:border-box;letter-spacing:0.5px;line-height:1.5;">NO ADS EVER!!</div>`,
+    'badge-4': `<svg xmlns="http://www.w3.org/2000/svg" width="88" height="31" viewBox="0 0 88 31"><defs><filter id="gglow"><feGaussianBlur stdDeviation="0.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><rect width="88" height="31" fill="#0a0a0a"/><rect width="88" height="31" fill="none" stroke="#00ff00" stroke-width="1"/><ellipse cx="16" cy="20" rx="9" ry="10" fill="#111"/><ellipse cx="16" cy="21" rx="5.5" ry="7" fill="#fffde0"/><ellipse cx="16" cy="8" rx="7" ry="7" fill="#111"/><ellipse cx="16" cy="9" rx="4" ry="4.5" fill="#fffde0"/><circle cx="13.5" cy="7" r="1.8" fill="white"/><circle cx="13.8" cy="7.2" r="1" fill="#111"/><circle cx="13.3" cy="6.8" r="0.4" fill="white"/><circle cx="18.5" cy="7" r="1.8" fill="white"/><circle cx="18.8" cy="7.2" r="1" fill="#111"/><circle cx="18.3" cy="6.8" r="0.4" fill="white"/><ellipse cx="16" cy="11" rx="2.5" ry="1.5" fill="#ff9900"/><ellipse cx="11" cy="29" rx="4" ry="2" fill="#ff9900" transform="rotate(-15 11 29)"/><ellipse cx="21" cy="29" rx="4" ry="2" fill="#ff9900" transform="rotate(15 21 29)"/><ellipse cx="7" cy="20" rx="3" ry="8" fill="#111" transform="rotate(-10 7 20)"/><ellipse cx="25" cy="20" rx="3" ry="8" fill="#111" transform="rotate(10 25 20)"/><line x1="33" y1="2" x2="33" y2="29" stroke="#00ff00" stroke-width="0.5" opacity="0.6"/><text x="60" y="13" font-family="Press Start 2P,monospace" font-size="5" fill="#00ff00" text-anchor="middle">LINUX</text><text x="60" y="23" font-family="Press Start 2P,monospace" font-size="5" fill="#00ff00" text-anchor="middle">NOW</text></svg>`,
+    'badge-5': `<svg xmlns="http://www.w3.org/2000/svg" width="88" height="31" viewBox="0 0 88 31"><defs><linearGradient id="bgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a0000"/><stop offset="100%" stop-color="#0a0010"/></linearGradient></defs><rect width="88" height="31" fill="url(#bgB)"/><rect width="88" height="31" fill="none" stroke="#ff3300" stroke-width="1.2"/><circle cx="16" cy="15.5" r="11" fill="none" stroke="#ff3300" stroke-width="1.5"/><circle cx="13" cy="16" r="3.5" fill="#4488bb"/><circle cx="17" cy="13.5" r="4" fill="#4488bb"/><circle cx="21" cy="16" r="3.5" fill="#4488bb"/><rect x="9.5" y="16" width="15" height="4" fill="#4488bb"/><line x1="7" y1="6" x2="25" y2="25" stroke="#ff3300" stroke-width="2" stroke-linecap="round"/><text x="57" y="13" font-family="Russo One,sans-serif" font-size="7.5" fill="#ffffff" text-anchor="middle">DOWN WITH</text><text x="57" y="23" font-family="Russo One,sans-serif" font-size="7.5" fill="#ff3300" text-anchor="middle">THE CLOUD</text></svg>`,
+  };
+
+  function copyBadge(btn, cls) {
+    const snippet = badgeSnippets[cls];
+    if (!snippet) return;
+    navigator.clipboard.writeText(snippet).then(() => {
+      btn.textContent = '✓ copied!'; btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = '📋 copy'; btn.classList.remove('copied'); }, 2000);
+    }).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = snippet; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      document.execCommand('copy'); ta.remove();
+      btn.textContent = '✓ copied!'; btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = '📋 copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  function addGuestbookEntry() {
+    const name = document.getElementById('gb-name').value.trim();
+    const msg  = document.getElementById('gb-msg').value.trim();
+    if (!name || !msg) { alert('pls fill out both fields!!'); return; }
+    const today = new Date();
+    const date  = String(today.getMonth()+1).padStart(2,'0')+'/'+String(today.getDate()).padStart(2,'0')+'/'+String(today.getFullYear()).slice(-2);
+    const emojis = ['🌟','🎮','💾','🌸','⭐','🎵','🦋','🔥','✨','🎨'];
+    const emoji  = emojis[Math.floor(Math.random() * emojis.length)];
+    const entry  = document.createElement('div');
+    entry.className = 'guestbook-entry';
+    entry.innerHTML = '<span class="gb-name">'+emoji+' '+name+'</span><span class="gb-date">'+date+'</span><div class="gb-msg">'+msg+'</div>';
+    const container = document.getElementById('gb-entries');
+    container.insertBefore(entry, container.firstChild);
+    document.getElementById('gb-name').value = '';
+    document.getElementById('gb-msg').value  = '';
+    const confirm = document.getElementById('gb-confirm');
+    confirm.style.display = 'block';
+    setTimeout(() => { confirm.style.display = 'none'; }, 3000);
+    const counter = document.getElementById('counter');
+    counter.textContent = String(parseInt(counter.textContent) + 1).padStart(6, '0');
+  }
+
+  const moods = [
+    ['😎','vibing'],['🥱','sleepy'],['☕','caffeinated'],['🎵','musical'],
+    ['🤓','nerding out'],['✨','inspired'],['😤','coding bug'],['🌙','nocturnal'],
+    ['🌿','chill'],['🎮','gaming'],
+  ];
+  const m = moods[Math.floor(Math.random() * moods.length)];
+  document.getElementById('moodEmoji').textContent = m[0];
+  document.getElementById('moodText').textContent  = m[1];
+
+  let playing = true;
+  function togglePlay() {
+    playing = !playing;
+    document.getElementById('playBtn').textContent = playing ? '❚❚' : '►';
+  }
+
+  let count = 400;
+  const counterEl = document.getElementById('counter');
+  const interval = setInterval(() => {
+    count++;
+    counterEl.textContent = String(count).padStart(6, '0');
+    if (count >= 420) clearInterval(interval);
+  }, 50);
+</script>
+</body>
+</html>
