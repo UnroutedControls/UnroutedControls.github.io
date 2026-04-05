@@ -81,22 +81,20 @@ jobs:
       #    race conditions if two posts are pushed close together.
       - name: Commit and push to live
         run: |
-          git config user.name  "BS Mail Bot"
-          git config user.email "bsmail@unroutedcontrols.bot"
+         git config user.name  "BS Mail Bot"
+         git config user.email "bsmail@unroutedcontrols.bot"
 
-          # Stash the patched brainstew.html
-          cp brainstew.html /tmp/brainstew_patched.html
-
-          # Switch to live and pull latest (prevents race condition)
-          git checkout live
-          git pull origin live --rebase
+          # Use a clean reset of remote live before applying patched file
+         git checkout live
+         git fetch origin live
+         git reset --hard origin/live
 
           # Apply the patched file
-          cp /tmp/brainstew_patched.html brainstew.html
+         cp /tmp/brainstew_patched.html brainstew.html
 
-          # Only commit if something actually changed
-          git add brainstew.html
-          if git diff --staged --quiet; then
+          # Only commit if something changed
+         git add brainstew.html
+         if git diff --staged --quiet; then
             echo "No changes — post likely already exists in brainstew.html"
           else
             git commit -m "📧 New BS Mail post published [skip ci]"
