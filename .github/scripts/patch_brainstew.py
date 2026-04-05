@@ -1,77 +1,45 @@
 #!/usr/bin/env python3
 """
-patch_brainstew.py
-==================
-Injects markdown posts into brainstew.html.
+patch_brainstew.py — improved
 
-Usage:
-    # Normal mode — inject new posts
-    python3 patch_brainstew.py "posts/my-post.md posts/another.md"
-
-    # Dry run — print what would change, exit without modifying anything
-    python3 patch_brainstew.py "posts/my-post.md" --dry-run
-
-    # Update mode — re-push a post with update: true in its frontmatter
-    # to replace its title/content in brainstew.html
-    python3 patch_brainstew.py "posts/my-post.md"
-    (set "update: true" in the post's frontmatter)
-
-Frontmatter format
-------------------
-    ---
-    title: My Post Title
-    date: 04/05/26
-    from: uc
-    update: false        # set to true to replace an existing post
-    ---
-
-Post ID
--------
-Derived from the filename, not the title.
-    posts/my-cool-post.md  ->  post-my-cool-post
-
-Renames create duplicates. Don't rename after first publish.
-To rename safely: delete the old entry from brainstew.html first.
-
-Marker comments required in brainstew.html
-------------------------------------------
-    <!-- ADD POSTS HERE: -->          (inside #inbox-rows div)
-    <!-- add more markdown posts here -->   (near bottom before </body>)
+Fixes and features:
+- Uses make_post_id when inserting; for updates will prefer existing matching IDs.
+- Robust post_exists: matches either id or data-post-id.
+- Safer update_post using permissive regexes and fallback behavior.
+- Consistent escaping for attributes vs text nodes.
+- Normalizes frontmatter keys and coerces update to boolean.
+- Better status-count replacement anchored to id.
+- Dry-run prints unified diff (first 200 lines) and top added/removed lines.
+- Logs collisions and chosen post_id.
+- More defensive marker handling.
 """
 
 import sys
 import os
 import re
 import argparse
+import difflib
 from datetime import datetime
 from html import escape
-
-# ── Configuration ───────────────────────────────────────────────────────────
 
 BRAINSTEW    = "brainstew.html"
 ROW_MARKER   = "<!-- ADD POSTS HERE:"
 BLOCK_MARKER = "<!-- add more markdown posts here"
 
-# ── Helpers ─────────────────────────────────────────────────────────────────
-
-def log(msg):
+def log(msg=""):
     print(msg, flush=True)
-
 
 def today_str():
     d = datetime.now()
     return f"{d.month:02d}/{d.day:02d}/{str(d.year)[2:]}"
 
-
 def parse_frontmatter(text):
     """
     Returns (meta_dict, body_text).
-    Recognized keys: title, date, from, update
-    All keys are optional with safe defaults.
+    Keys normalized to lowercase. 'update' coerced to boolean.
     """
     meta = {}
     body = text
-
     fm_match = re.match(r'^---\s*\n(.*?)\n---\s*\n', text, re.DOTALL)
     if fm_match:
         fm_block = fm_match.group(1)
@@ -92,40 +60,44 @@ def parse_frontmatter(text):
     meta.setdefault('from',   'uc')
     meta.setdefault('update', 'false')
 
-    # Sanitize all string values — no unescaped HTML in attributes
-    for k in ('title', 'date', 'from'):
-        meta[k] = meta[k].strip()
+    # Normalize and coerce types
+    meta['title'] = meta['title'].strip()
+    meta['date']  = meta['date'].strip()
+    meta['from']  = meta['from'].strip()
+    meta['update'] = str(meta['update']).strip().lower() in ('true', 'yes', '1', 'y')
 
     return meta, body.strip()
 
-
 def slug_from_file(path):
-    """posts/My Cool Post.md  ->  my-cool-post"""
     base = os.path.basename(path)
     slug = base.replace('.md', '').replace(' ', '-').lower()
     return re.sub(r'[^a-z0-9-]', '', slug)
 
+def find_existing_post_ids_for_slug(slug, html):
+    """Return list of existing post-id strings that start with post-{slug}"""
+    pattern = re.compile(r'\b(post-' + re.escape(slug) + r'(?:-\d+)?)\b')
+    return sorted(set(pattern.findall(html)), key=lambda s: (len(s), s))
 
 def make_post_id(slug, existing_html):
-    """Return a unique post ID, appending -2, -3 etc. if needed."""
-    candidate = f"post-{slug}"
-    if candidate not in existing_html:
-        return candidate
+    """Return a candidate post id that does not collide; prefer next numeric."""
+    base = f"post-{slug}"
+    if base not in existing_html:
+        return base
     i = 2
-    while f"{candidate}-{i}" in existing_html:
+    while f"{base}-{i}" in existing_html:
         i += 1
-    return f"{candidate}-{i}"
-
+    return f"{base}-{i}"
 
 def post_exists(post_id, html):
-    return (f'id="{post_id}"' in html and
-            f'data-post-id="{post_id}"' in html)
-
+    """Existence if either id attribute or data-post-id attribute present."""
+    return (re.search(r'\bid="' + re.escape(post_id) + r'"', html) is not None or
+            re.search(r'\bdata-post-id="' + re.escape(post_id) + r'"', html) is not None)
 
 def build_inbox_row(post_id, meta):
-    t = escape(meta['title'])
-    f = escape(meta['from'])
-    d = escape(meta['date'])
+    # For text nodes we escape without quote handling (no additional quoting)
+    t = escape(meta['title'], quote=False)
+    f = escape(meta['from'],  quote=False)
+    d = escape(meta['date'],  quote=False)
     return (
         f'          <div class="inbox-item unread" data-post-id="{post_id}">\n'
         f'            <div>&#x1F4E7;</div>\n'
@@ -136,12 +108,12 @@ def build_inbox_row(post_id, meta):
         f'          </div>'
     )
 
-
 def build_script_block(post_id, meta, body):
+    # Attributes must be quoted-escaped
     t = escape(meta['title'], quote=True)
     d = escape(meta['date'],  quote=True)
     f = escape(meta['from'],  quote=True)
-    # Escape any </script> in the body to prevent early tag termination
+    # Protect against closing script tag
     safe_body = body.replace('</script>', '<\\/script>')
     return (
         f'<script type="text/markdown" id="{post_id}"'
@@ -152,17 +124,15 @@ def build_script_block(post_id, meta, body):
         f'</script>'
     )
 
-
 def inject_post(html, inbox_row, script_block):
     """
-    Insert inbox_row directly after ROW_MARKER.
-    Insert script_block directly before BLOCK_MARKER.
-    Newest post ends up at the top of the inbox.
+    Insert after ROW_MARKER and before BLOCK_MARKER.
+    Newest at top.
     """
+    # Find markers on their own lines tolerant to whitespace
     lines = html.splitlines(keepends=True)
-    row_idx   = None
+    row_idx = None
     block_idx = None
-
     for i, line in enumerate(lines):
         if ROW_MARKER in line and row_idx is None:
             row_idx = i
@@ -170,82 +140,121 @@ def inject_post(html, inbox_row, script_block):
             block_idx = i
 
     if row_idx is None:
-        raise ValueError(
-            f"ROW_MARKER not found: '{ROW_MARKER}'\n"
-            f"Add this comment inside your #inbox-rows div in brainstew.html"
-        )
+        raise ValueError(f"ROW_MARKER not found: '{ROW_MARKER}'")
     if block_idx is None:
-        raise ValueError(
-            f"BLOCK_MARKER not found: '{BLOCK_MARKER}'\n"
-            f"Add this comment before </body> in brainstew.html"
-        )
+        raise ValueError(f"BLOCK_MARKER not found: '{BLOCK_MARKER}'")
 
     lines.insert(row_idx + 1, inbox_row + '\n\n')
     if block_idx > row_idx:
         block_idx += 1
     lines.insert(block_idx, script_block + '\n\n')
-
     return ''.join(lines)
 
+def safe_replace_script_tag_content(html, post_id, new_body):
+    """
+    Replace the inner content of the <script ... id="post_id"...>...</script>
+    without assuming attribute order. Uses regex to find the opening tag and
+    then replace up to the closing </script>.
+    """
+    open_tag_re = re.compile(r'(<script\b[^>]*\bid="' + re.escape(post_id) + r'"[^>]*>)(.*?)(</script>)',
+                             flags=re.DOTALL | re.IGNORECASE)
+    safe_body = new_body.replace('</script>', '<\\/script>')
+    def repl(m):
+        return m.group(1) + "\n" + safe_body + "\n" + m.group(3)
+    new_html, count = open_tag_re.subn(repl, html)
+    if count == 0:
+        raise ValueError(f"Script block with id='{post_id}' not found for replacement")
+    return new_html
+
+def safe_update_data_title_attribute(html, post_id, new_title):
+    """
+    Replace or add data-title="..." on the script tag with id=post_id.
+    """
+    # Find the script tag opening portion
+    script_open_re = re.compile(r'(<script\b[^>]*\bid="' + re.escape(post_id) + r'"[^>]*>)',
+                                flags=re.IGNORECASE)
+    m = script_open_re.search(html)
+    if not m:
+        raise ValueError(f"Script tag with id='{post_id}' not found for data-title update")
+    open_tag = m.group(1)
+    # Replace data-title if present
+    if 'data-title=' in open_tag:
+        new_open_tag = re.sub(r'(data-title\s*=\s*")[^"]*(")', r'\1' + escape(new_title, quote=True) + r'\2', open_tag)
+    else:
+        # insert before closing '>'
+        new_open_tag = open_tag[:-1] + f' data-title="{escape(new_title, quote=True)}">'
+    # Substitute the single open tag occurrence
+    return html[:m.start(1)] + new_open_tag + html[m.end(1):]
+
+def safe_update_inbox_row_title(html, post_id, new_title):
+    """
+    Find the inbox row with data-post-id="post_id" and replace the third <div> text node (the visible title).
+    Approach: find the row start, then a simple regex for the third <div>...</div> after it.
+    """
+    row_re = re.compile(r'(<div[^>]*data-post-id="' + re.escape(post_id) + r'"[^>]*>)(.*?)(</div>)',
+                        flags=re.DOTALL | re.IGNORECASE)
+    # Locate the row's start position
+    m = re.search(r'<div[^>]*data-post-id="' + re.escape(post_id) + r'"[^>]*>', html)
+    if not m:
+        raise ValueError(f"Inbox row with data-post-id='{post_id}' not found")
+    start_idx = m.start()
+    # From that start, search forward for the sequence of three immediate child divs and replace the 3rd one's content.
+    sub_html = html[start_idx:]
+    # pattern to find the first three sibling divs inside the row
+    three_divs_re = re.compile(r'(<div\b[^>]*>.*?</div>\s*<div\b[^>]*>.*?</div>\s*<div\b[^>]*>)(.*?)(</div>)',
+                               flags=re.DOTALL | re.IGNORECASE)
+    m2 = three_divs_re.search(sub_html)
+    if not m2:
+        raise ValueError("Inbox row structure unexpected; cannot update title reliably")
+    new_sub = sub_html[:m2.start(2)] + escape(new_title, quote=False) + sub_html[m2.end(2):]
+    return html[:start_idx] + new_sub
 
 def update_post(html, post_id, meta, body):
     """
-    Replace the title in the existing inbox row and replace
-    the entire script block content for an existing post.
-    Used when frontmatter contains update: true.
+    Robust update flow:
+    - update data-title on script tag
+    - update visible title in inbox row
+    - replace script block body content
     """
-    t = escape(meta['title'], quote=True)
-    d = escape(meta['date'],  quote=True)
-    f_val = escape(meta['from'], quote=True)
-
-    # Update data-title attribute on the script block
-    html = re.sub(
-        rf'(<script[^>]*id="{re.escape(post_id)}"[^>]*data-title=")[^"]*(")',
-        rf'\g<1>{t}\g<2>',
-        html
-    )
-
-    # Update the visible title text in the inbox row
-    # Row structure: <div>📧</div><div class="dot-cell">...</div><div>TITLE</div>
-    html = re.sub(
-        rf'(data-post-id="{re.escape(post_id)}"[^>]*>.*?<div class="dot-cell">.*?</div>\s*<div>)[^<]*(</div>)',
-        rf'\g<1>{escape(meta["title"])}\g<2>',
-        html,
-        flags=re.DOTALL
-    )
-
-    # Replace the script block content
-    safe_body = body.replace('</script>', '<\\/script>')
-    html = re.sub(
-        rf'(<script[^>]*id="{re.escape(post_id)}"[^>]*>).*?(</script>)',
-        rf'\g<1>\n{safe_body}\n\g<2>',
-        html,
-        flags=re.DOTALL
-    )
-
+    # Update data-title attribute on script opening tag
+    html = safe_update_data_title_attribute(html, post_id, meta['title'])
+    # Update visible title in inbox row
+    html = safe_update_inbox_row_title(html, post_id, meta['title'])
+    # Replace script block content
+    html = safe_replace_script_tag_content(html, post_id, body)
     return html
 
-
 def update_status_bar(html):
-    count = len(re.findall(r'class="inbox-item', html))
+    # Count inbox-item occurrences
+    count = len(re.findall(r'\bclass="inbox-item\b', html))
+    # Replace inner text of the element with id="status-count"
     return re.sub(
-        r'(<div class="status-panel" id="status-count">)[^<]*(</div>)',
-        rf'\g<1>{count} message(s)\g<2>',
-        html
+        r'(<div[^>]*class="status-panel"[^>]*id="status-count"[^>]*>)(.*?)(</div>)',
+        lambda m: m.group(1) + f"{count} message(s)" + m.group(3),
+        html,
+        flags=re.DOTALL | re.IGNORECASE
     )
 
-
-def diff_summary(original, modified):
-    """Print a brief summary of what changed."""
-    orig_lines = set(original.splitlines())
-    new_lines  = set(modified.splitlines())
-    added   = [l for l in new_lines  - orig_lines if l.strip()]
-    removed = [l for l in orig_lines - new_lines  if l.strip()]
+def diff_summary(original, modified, show_unified=True, max_lines=200):
+    """Log a brief summary and optionally some unified diff lines."""
+    orig_lines = original.splitlines()
+    new_lines  = modified.splitlines()
+    added   = [l for l in new_lines  if l not in orig_lines and l.strip()]
+    removed = [l for l in orig_lines if l not in new_lines  and l.strip()]
     log(f"  + {len(added)} lines added")
     log(f"  - {len(removed)} lines removed")
-
-
-# ── Per-file processor ──────────────────────────────────────────────────────
+    if show_unified:
+        ud = difflib.unified_diff(orig_lines, new_lines, lineterm='')
+        snippet = []
+        for i, line in enumerate(ud):
+            if i >= max_lines:
+                break
+            snippet.append(line)
+        if snippet:
+            log("\n--- Unified diff (first lines) ---")
+            for ln in snippet:
+                log(ln)
+            log("--- end diff snippet ---\n")
 
 def process_file(md_path, html, dry_run=False):
     log(f"\n{'─'*50}")
@@ -259,42 +268,57 @@ def process_file(md_path, html, dry_run=False):
         text = fh.read()
 
     meta, body = parse_frontmatter(text)
-    slug        = slug_from_file(md_path)
-    post_id     = f"post-{slug}"
-    is_update   = meta['update'].lower() in ('true', 'yes', '1')
+    slug = slug_from_file(md_path)
+
+    # Detect existing ids for this slug
+    existing_ids = find_existing_post_ids_for_slug(slug, html)
+    chosen_post_id = None
+    is_update = bool(meta.get('update', False))
+
+    if existing_ids:
+        # If any existing IDs for slug, prefer the first (likely base or lowest suffix)
+        chosen_post_id = existing_ids[0]
+        log(f"  Existing IDs for slug '{slug}': {existing_ids} — choosing {chosen_post_id}")
+    else:
+        chosen_post_id = f"post-{slug}"
 
     log(f"  Title:   {meta['title']}")
     log(f"  Date:    {meta['date']}")
     log(f"  From:    {meta['from']}")
-    log(f"  Post ID: {post_id}")
+    log(f"  Slug:    {slug}")
+    log(f"  Post ID: {chosen_post_id}")
     log(f"  Update:  {is_update}")
 
-    if post_exists(post_id, html):
+    if post_exists(chosen_post_id, html):
         if is_update:
             log(f"  Mode: UPDATE existing post")
             if dry_run:
-                log(f"  [DRY RUN] would update post '{post_id}'")
+                log(f"  [DRY RUN] would update post '{chosen_post_id}'")
                 return html
-            html = update_post(html, post_id, meta, body)
-            log(f"  Updated successfully")
+            try:
+                html = update_post(html, chosen_post_id, meta, body)
+                log(f"  Updated successfully")
+            except Exception as e:
+                log(f"  ERROR updating post '{chosen_post_id}': {e}")
         else:
-            log(f"  SKIP: post '{post_id}' already exists.")
+            log(f"  SKIP: post '{chosen_post_id}' already exists.")
             log(f"  To update it, add 'update: true' to the frontmatter.")
     else:
-        log(f"  Mode: INSERT new post")
+        # No exact existing match — generate a non-colliding id for insertion
+        insert_post_id = make_post_id(slug, html)
+        if insert_post_id != f"post-{slug}":
+            log(f"  Collision detected — using insert id '{insert_post_id}'")
+        log(f"  Mode: INSERT new post as {insert_post_id}")
         if dry_run:
-            log(f"  [DRY RUN] would insert post '{post_id}'")
+            log(f"  [DRY RUN] would insert post '{insert_post_id}'")
             return html
-        inbox_row    = build_inbox_row(post_id, meta)
-        script_block = build_script_block(post_id, meta, body)
+        inbox_row    = build_inbox_row(insert_post_id, meta)
+        script_block = build_script_block(insert_post_id, meta, body)
         html         = inject_post(html, inbox_row, script_block)
         html         = update_status_bar(html)
         log(f"  Inserted successfully")
 
     return html
-
-
-# ── Main ────────────────────────────────────────────────────────────────────
 
 def main():
     parser = argparse.ArgumentParser(description='Patch brainstew.html with markdown posts')
@@ -329,7 +353,10 @@ def main():
 
     html = original_html
     for md_path in md_files:
-        html = process_file(md_path, html, dry_run=args.dry_run)
+        try:
+            html = process_file(md_path, html, dry_run=args.dry_run)
+        except Exception as e:
+            log(f"ERROR processing {md_path}: {e}")
 
     log(f"\n{'─'*50}")
 
@@ -345,7 +372,6 @@ def main():
             fh.write(html)
         diff_summary(original_html, html)
         log(f"\nDone. {BRAINSTEW} updated.")
-
 
 if __name__ == '__main__':
     main()
