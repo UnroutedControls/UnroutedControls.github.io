@@ -84,17 +84,15 @@ jobs:
           git config user.name  "BS Mail Bot"
           git config user.email "bsmail@unroutedcontrols.bot"
 
-          # Stash the patched brainstew.html
-          cp brainstew.html /tmp/brainstew_patched.html
-
-          # Switch to live and pull latest (prevents race condition)
+          # Use a clean reset of remote live before applying patched file
           git checkout live
-          git pull origin live --rebase
+          git fetch origin live
+          git reset --hard origin/live
 
           # Apply the patched file
           cp /tmp/brainstew_patched.html brainstew.html
 
-          # Only commit if something actually changed
+          # Only commit if something changed
           git add brainstew.html
           if git diff --staged --quiet; then
             echo "No changes — post likely already exists in brainstew.html"
