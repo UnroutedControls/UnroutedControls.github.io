@@ -84,15 +84,28 @@ jobs:
           git config user.name  "BS Mail Bot"
           git config user.email "bsmail@unroutedcontrols.bot"
 
+<<<<<<< HEAD
           # Use a clean reset of remote live before applying patched file
           git checkout live
           git fetch origin live
+=======
+          # Ensure we start from a clean live branch state
+          git fetch origin live
+          git checkout live
+>>>>>>> origin
           git reset --hard origin/live
 
-          # Apply the patched file
-          cp /tmp/brainstew_patched.html brainstew.html
+          # Copy the patched brainstew.html from the workspace (assumes patch step overwrote ./brainstew.html)
+          if [ ! -f "./brainstew.html" ]; then
+            echo "ERROR: brainstew.html not found in workspace. Ensure the patch step wrote ./brainstew.html"
+            exit 1
+          fi
 
+<<<<<<< HEAD
           # Only commit if something changed
+=======
+          # Stage and commit only if changed
+>>>>>>> origin
           git add brainstew.html
           if git diff --staged --quiet; then
             echo "No changes — post likely already exists in brainstew.html"
@@ -101,3 +114,7 @@ jobs:
             git push origin live
             echo "Done — live branch updated"
           fi
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin
