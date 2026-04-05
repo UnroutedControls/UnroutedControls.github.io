@@ -1,49 +1,105 @@
 name: Publish BS Mail Post
 
+# ─────────────────────────────────────────────────────────────
+# BRANCHES
+#   main  = source of truth. authors write and push here.
+#   live  = deploy target. GitHub Pages serves this branch.
+#           the bot owns it — never edit brainstew.html here manually.
+#
+# TRIGGER
+#   fires only when a .md file inside posts/ is pushed to main.
+#   pushing to live never triggers this workflow.
+# ─────────────────────────────────────────────────────────────
 on:
   push:
     branches:
-      - live
+      - main
     paths:
       - 'posts/**.md'
 
 permissions:
-  contents: write       # needed to commit the updated brainstew.html back
+  contents: write
 
 jobs:
   publish:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+
+      # 1. Check out main (full history needed for git diff)
+      - name: Checkout main
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # full history so we can diff
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
+      # 2. Install Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Find new/changed markdown posts
+      # 3. Identify which .md files changed in this push
+      - name: Find changed posts
         id: find_posts
         run: |
-          # Get list of .md files that were added or modified in this push
-          CHANGED=$(git diff --name-only --diff-filter=AM ${{ github.event.before }} ${{ github.sha }} -- 'posts/*.md' 2>/dev/null || git show --name-only --format="" ${{ github.sha }} -- 'posts/*.md')
+          CHANGED=$(
+            git diff --name-only --diff-filter=AM \
+              ${{ github.event.before }} ${{ github.sha }} \
+              -- 'posts/*.md' 2>/dev/null \
+            || git show --name-only --format="" \
+              ${{ github.sha }} -- 'posts/*.md'
+          )
+          if [ -z "$CHANGED" ]; then
+            echo "No markdown posts found in this push — exiting"
+            exit 0
+          fi
+          echo "Posts to publish:"
+          echo "$CHANGED"
           echo "changed_files<<EOF" >> $GITHUB_OUTPUT
-          echo "$CHANGED" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-          echo "Files to process: $CHANGED"
+          echo "$CHANGED"          >> $GITHUB_OUTPUT
+          echo "EOF"               >> $GITHUB_OUTPUT
 
+      # 4. Fetch live and pull latest brainstew.html from it
+      #    We always patch the live version, not the main version.
+      #    This means live's brainstew.html is the canonical copy.
+      - name: Get live brainstew.html
+        run: |
+          git fetch origin live
+          git checkout origin/live -- brainstew.html
+          echo "Fetched brainstew.html from live ($(wc -c < brainstew.html) bytes)"
+
+      # 5. Run the patcher against the live brainstew.html
       - name: Patch brainstew.html
         run: |
-          python3 .github/scripts/patch_brainstew.py "${{ steps.find_posts.outputs.changed_files }}"
+          python3 .github/scripts/patch_brainstew.py \
+            "${{ steps.find_posts.outputs.changed_files }}"
 
-      - name: Commit and push updated brainstew.html
+      # 6. Push ONLY the patched brainstew.html to live
+      #    We rebase on the current tip of live first to prevent
+      #    race conditions if two posts are pushed close together.
+      - name: Commit and push to live
         run: |
           git config user.name  "BS Mail Bot"
           git config user.email "bsmail@unroutedcontrols.bot"
-          git add brainstew.html
+
+          # Stash the patched brainstew.html
+          cp brainstew.html /tmp/brainstew_patched.html
+
+          # Switch to live and pull latest (prevents race condition)
+          git checkout live
+          git pull origin live --rebase
+
+          # Apply the patched file
+          cp /tmp/brainstew_patched.html brainstew.html
+
           # Only commit if something actually changed
-          git diff --staged --quiet || git commit -m "📧 New BS Mail post published [skip ci]"
-          git push origin live
+          git add brainstew.html
+          if git diff --staged --quiet; then
+            echo "No changes — post likely already exists in brainstew.html"
+          else
+            git commit -m "📧 New BS Mail post published [skip ci]"
+            git push origin live
+            echo "Done — live branch updated"
+          fi
