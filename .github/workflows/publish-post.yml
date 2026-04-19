@@ -1,24 +1,19 @@
 name: Publish BS Mail Post
 
 # ─────────────────────────────────────────────────────────────
-# Triggers when you push a .md file to posts/ on the live branch.
-# live = your GitHub Pages branch (the one your site deploys from).
+# BRANCHES
+#   main  = source of truth. authors write and push here.
+#   live  = deploy target. GitHub Pages serves this branch.
+#           the bot owns it — never edit brainstew.html here manually.
 #
-# WHAT IT DOES:
-#   1. Reads your .md file from posts/
-#   2. Injects it into brainstew.html
-#   3. Commits brainstew.html back to live
-#   4. GitHub Pages redeploys (~60 seconds)
-#   5. Sends newsletter via Buttondown (if API key is set)
-#
-# SECRETS (repo Settings → Secrets and variables → Actions):
-#   BUTTONDOWN_API_KEY  — from buttondown.com/settings/api (optional)
-#   SITE_URL            — https://uc.unrouted.org (optional, for email footer)
+# TRIGGER
+#   fires only when a .md file inside posts/ is pushed to main.
+#   pushing to live never triggers this workflow.
 # ─────────────────────────────────────────────────────────────
 on:
   push:
     branches:
-      - live
+      - main
     paths:
       - 'posts/**.md'
 
@@ -31,21 +26,21 @@ jobs:
 
     steps:
 
-      # ── 1. Checkout full repo ──────────────────────────────
-      - name: Checkout
+      # 1. Check out main (full history needed for git diff)
+      - name: Checkout main
         uses: actions/checkout@v4
         with:
-          ref: live
+          ref: main
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      # ── 2. Python ─────────────────────────────────────────
+      # 2. Install Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      # ── 3. Find which posts changed in this push ──────────
+      # 3. Identify which .md files changed in this push
       - name: Find changed posts
         id: find_posts
         run: |
@@ -57,50 +52,54 @@ jobs:
               ${{ github.sha }} -- 'posts/*.md'
           )
           if [ -z "$CHANGED" ]; then
-            echo "No markdown files found — nothing to do"
+            echo "No markdown posts found in this push — exiting"
             exit 0
           fi
-          echo "Changed files:"
+          echo "Posts to publish:"
           echo "$CHANGED"
           echo "changed_files<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGED"          >> $GITHUB_OUTPUT
           echo "EOF"               >> $GITHUB_OUTPUT
 
-      # ── 4. Patch brainstew.html ───────────────────────────
+      # 4. Fetch live and pull latest brainstew.html from it
+      #    We always patch the live version, not the main version.
+      #    This means live's brainstew.html is the canonical copy.
+      - name: Get live brainstew.html
+        run: |
+          git fetch origin live
+          git checkout origin/live -- brainstew.html
+          echo "Fetched brainstew.html from live ($(wc -c < brainstew.html) bytes)"
+
+      # 5. Run the patcher against the live brainstew.html
       - name: Patch brainstew.html
         run: |
           python3 .github/scripts/patch_brainstew.py \
             "${{ steps.find_posts.outputs.changed_files }}"
 
-      # ── 5. Commit and push updated brainstew.html ─────────
-      - name: Commit and push
+      # 6. Push ONLY the patched brainstew.html to live
+      #    We rebase on the current tip of live first to prevent
+      #    race conditions if two posts are pushed close together.
+      - name: Commit and push to live
         run: |
           git config user.name  "BS Mail Bot"
           git config user.email "bsmail@unroutedcontrols.bot"
 
-          # Pull latest before committing — prevents race condition
+          # Stash the patched brainstew.html
+          cp brainstew.html /tmp/brainstew_patched.html
+
+          # Switch to live and pull latest (prevents race condition)
+          git checkout live
           git pull origin live --rebase
 
+          # Apply the patched file
+          cp /tmp/brainstew_patched.html brainstew.html
+
+          # Only commit if something actually changed
           git add brainstew.html
           if git diff --staged --quiet; then
-            echo "No changes — post already exists, skipping"
+            echo "No changes — post likely already exists in brainstew.html"
           else
             git commit -m "📧 New BS Mail post published [skip ci]"
             git push origin live
-            echo "Done — site will update in ~60 seconds"
+            echo "Done — live branch updated"
           fi
-
-      # ── 6. Send newsletter (optional) ─────────────────────
-      # Skipped automatically if BUTTONDOWN_API_KEY secret is not set.
-      # Add newsletter: false to a post's frontmatter to skip that post.
-      - name: Send newsletter
-        env:
-          BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
-          SITE_URL: ${{ secrets.SITE_URL }}
-        run: |
-          if [ -z "$BUTTONDOWN_API_KEY" ]; then
-            echo "No BUTTONDOWN_API_KEY — skipping newsletter"
-            exit 0
-          fi
-          python3 .github/scripts/send_newsletter.py \
-            "${{ steps.find_posts.outputs.changed_files }}"
