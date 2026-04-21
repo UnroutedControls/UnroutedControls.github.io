@@ -842,75 +842,89 @@
   </a>
   <a href="coc-warroom.html" class="nav-float-btn nav-coc">
     <svg class="coc-king-svg nav-float-art" width="72" height="62" viewBox="0 0 72 62" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
-    <!-- GOLEM body (big grey stone guy) -->
-    <!-- golem torso -->
-    <rect x="14" y="28" width="28" height="22" fill="#6a7080"/>
-    <rect x="14" y="28" width="28" height="3"  fill="#8090a0"/>
-    <rect x="14" y="28" width="3"  height="22" fill="#8090a0"/>
-    <rect x="39" y="28" width="3"  height="22" fill="#505860"/>
-    <!-- golem cracks -->
-    <rect x="20" y="32" width="1"  height="8"  fill="#505860" opacity="0.7"/>
-    <rect x="30" y="35" width="1"  height="6"  fill="#505860" opacity="0.7"/>
-    <rect x="24" y="40" width="6"  height="1"  fill="#505860" opacity="0.5"/>
-    <!-- golem dark elixir glow cracks -->
-    <rect x="21" y="33" width="1"  height="6"  fill="#9900cc" opacity="0.5"/>
-    <rect x="31" y="36" width="1"  height="4"  fill="#9900cc" opacity="0.5"/>
-    <!-- golem head -->
-    <rect x="18" y="18" width="20" height="12" fill="#6a7080"/>
-    <rect x="18" y="18" width="20" height="2"  fill="#8090a0"/>
-    <!-- golem eyes (glowing purple) -->
-    <rect x="21" y="22" width="4"  height="4"  fill="#cc44ff"/>
-    <rect x="31" y="22" width="4"  height="4"  fill="#cc44ff"/>
-    <rect x="22" y="23" width="2"  height="2"  fill="#ff88ff"/>
-    <rect x="32" y="23" width="2"  height="2"  fill="#ff88ff"/>
-    <!-- golem arms -->
-    <rect x="8"  y="30" width="6"  height="16" fill="#6a7080"/>
-    <rect x="8"  y="30" width="2"  height="16" fill="#8090a0"/>
-    <rect x="42" y="30" width="6"  height="16" fill="#6a7080"/>
-    <rect x="46" y="30" width="2"  height="16" fill="#505860"/>
-    <!-- golem fists -->
-    <rect x="6"  y="44" width="8"  height="6"  fill="#5a6070"/>
-    <rect x="42" y="44" width="8"  height="6"  fill="#5a6070"/>
-    <!-- golem legs -->
-    <rect x="18" y="50" width="8"  height="10" fill="#5a6070"/>
-    <rect x="30" y="50" width="8"  height="10" fill="#5a6070"/>
-    <!-- golem feet -->
-    <rect x="16" y="58" width="12" height="4"  fill="#4a5060"/>
-    <rect x="28" y="58" width="12" height="4"  fill="#4a5060"/>
-    <!-- DE drips from golem -->
-    <rect class="de-drip"  x="20" y="50" width="2" height="3" fill="#cc00ff" opacity="0.8"/>
-    <rect class="de-drip2" x="34" y="50" width="2" height="3" fill="#aa00ee" opacity="0.8"/>
 
-    <!-- BARBARIAN KING sitting on golem's shoulder -->
-    <!-- king body -->
-    <rect x="38" y="10" width="10" height="12" fill="#8b4513"/>
-    <rect x="38" y="10" width="10" height="2"  fill="#a0522d"/>
-    <!-- king skin -->
-    <rect x="40" y="4"  width="7"  height="7"  fill="#c8a050"/>
-    <rect x="40" y="4"  width="7"  height="2"  fill="#d4a860"/>
-    <!-- king crown (iron) -->
-    <rect x="39" y="2"  width="9"  height="4"  fill="#888"/>
-    <rect x="39" y="0"  width="2"  height="3"  fill="#aaa"/>
-    <rect x="43" y="0"  width="2"  height="4"  fill="#aaa"/>
-    <rect x="47" y="0"  width="2"  height="3"  fill="#aaa"/>
-    <!-- crown gem -->
-    <rect x="44" y="1"  width="1"  height="2"  fill="#ff0044"/>
-    <!-- king beard -->
-    <rect x="40" y="9"  width="2"  height="3"  fill="#6b3a1a"/>
-    <rect x="45" y="9"  width="2"  height="3"  fill="#6b3a1a"/>
-    <!-- king arm + sword -->
-    <g class="coc-sword">
-      <rect x="48" y="12" width="3"  height="8"  fill="#8b4513"/><!-- arm -->
-      <rect x="50" y="16" width="2"  height="14" fill="#ccc"/>    <!-- blade -->
-      <rect x="49" y="16" width="4"  height="2"  fill="#888"/>    <!-- guard -->
-      <rect x="50" y="14" width="2"  height="3"  fill="#8b4513"/> <!-- grip -->
-    </g>
-    <!-- king other arm -->
-    <rect x="36" y="12" width="3"  height="6"  fill="#8b4513"/>
-    <!-- king belt -->
-    <rect x="38" y="20" width="10" height="2"  fill="#555"/>
-    <rect x="41" y="19" width="4"  height="4"  fill="#888"/><!-- buckle -->
-  </svg>
+  <style>
+    .arrow {
+      opacity: 0;
+      transform: translateX(-28px);
+      transition: transform 0.35s cubic-bezier(.2,.8,.3,1), opacity 0.15s;
+    }
+
+    .nav-float-btn:hover .arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .arrow2 { transition-delay: 0.08s; }
+    .arrow3 { transition-delay: 0.16s; }
+
+    .impact {
+      transform-origin: center;
+      transition: transform 0.15s ease;
+    }
+
+    .nav-float-btn:hover .impact {
+      transform: translateX(1px) translateY(1px);
+    }
+  </style>
+
+  <!-- SHIELD GROUP -->
+  <g class="impact">
+
+    <!-- GOLD BORDER -->
+    <polygon points="18,8 54,8 60,14 60,38 36,58 12,38 12,14"
+             fill="#c9a33a"/>
+    <polygon points="20,10 52,10 57,15 57,36 36,54 15,36 15,15"
+             fill="#f2d16b"/>
+
+    <!-- INNER SHADOW -->
+    <polygon points="22,12 50,12 54,16 54,35 36,51 18,35 18,16"
+             fill="#7a4a12"/>
+
+    <!-- WOOD BODY -->
+    <polygon points="23,13 49,13 53,17 53,34 36,50 19,34 19,17"
+             fill="#8b5a2b"/>
+
+    <!-- WOOD PLANKS -->
+    <rect x="25" y="16" width="22" height="4" fill="#9c6a34"/>
+    <rect x="25" y="22" width="22" height="4" fill="#7e4f25"/>
+    <rect x="25" y="28" width="22" height="4" fill="#9c6a34"/>
+
+    <!-- WOOD GRAIN LINES -->
+    <rect x="30" y="16" width="1" height="16" fill="#5e3818" opacity="0.5"/>
+    <rect x="38" y="16" width="1" height="16" fill="#5e3818" opacity="0.5"/>
+
+    <!-- METAL RIVETS -->
+    <rect x="26" y="15" width="2" height="2" fill="#d8b24a"/>
+    <rect x="44" y="15" width="2" height="2" fill="#d8b24a"/>
+    <rect x="26" y="31" width="2" height="2" fill="#d8b24a"/>
+    <rect x="44" y="31" width="2" height="2" fill="#d8b24a"/>
+
+  </g>
+
+  <!-- ARROWS -->
+  <!-- Arrow 1 -->
+  <g class="arrow">
+    <rect x="0" y="20" width="20" height="2" fill="#6e4b2a"/>
+    <rect x="0" y="19" width="4" height="4" fill="#dcdcdc"/>
+    <polygon points="20,21 24,18 24,24" fill="#cfcfcf"/>
+  </g>
+
+  <!-- Arrow 2 -->
+  <g class="arrow arrow2">
+    <rect x="2" y="28" width="18" height="2" fill="#6e4b2a"/>
+    <rect x="2" y="27" width="4" height="4" fill="#dcdcdc"/>
+    <polygon points="20,29 24,26 24,32" fill="#cfcfcf"/>
+  </g>
+
+  <!-- Arrow 3 -->
+  <g class="arrow arrow3">
+    <rect x="4" y="36" width="16" height="2" fill="#6e4b2a"/>
+    <rect x="4" y="35" width="4" height="4" fill="#dcdcdc"/>
+    <polygon points="20,37 24,34 24,40" fill="#cfcfcf"/>
+  </g>
+
+</svg>
     &#x2694; COC WAR ROOM
   </a>
 </nav>
