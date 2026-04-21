@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>War Journal — Unrouted Controls</title>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Oswald:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --paper: #cfc09f;
+      --paper-dark: #b8a882;
+      --paper-light: #e2d4b4;
+      --ink: #1c130a;
+      --ink-faded: #3d2e1a;
+      --red-stamp: #8b1c1c;
+      --olive: #4a5240;
+      --olive-light: #6b7560;
+      --brass: #8b7340;
+      --tape: rgba(180, 160, 100, 0.45);
+      --shadow: rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: #1a1a14;
+      background-image:
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 40px,
+          rgba(255,255,255,0.015) 40px,
+          rgba(255,255,255,0.015) 41px
+        ),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+      font-family: 'Special Elite', monospace;
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 0 0 80px 0;
+    }
+
+    /* ── TOP HEADER BAND ── */
+    .top-band {
+      background: var(--olive);
+      border-bottom: 4px solid #2e3328;
+      padding: 10px 0;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .top-band-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .top-band a {
+      color: #b8c4a8;
+      text-decoration: none;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .top-band a:hover { color: #e2d4b4; }
+    .top-band-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      color: #c8d4b4;
+      text-transform: uppercase;
+    }
+
+    /* ── MASTHEAD ── */
+    .masthead {
+      max-width: 860px;
+      margin: 48px auto 0;
+      padding: 0 24px;
+      text-align: center;
+      position: relative;
+    }
+    .masthead-rule {
+      border: none;
+      border-top: 3px solid var(--paper-dark);
+      opacity: 0.25;
+      margin: 0;
+    }
+    .masthead-eyebrow {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.35em;
+      color: #6b6050;
+      text-transform: uppercase;
+      margin: 28px 0 8px;
+    }
+    .masthead h1 {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(2.8rem, 7vw, 5.2rem);
+      font-weight: 700;
+      color: var(--paper);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      line-height: 1;
+      text-shadow: 3px 3px 0 #0d0d0a, 0 0 40px rgba(200,176,130,0.15);
+    }
+    .masthead-sub {
+      font-family: 'Libre Baskerville', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: #8a7a60;
+      margin: 12px 0 0;
+      letter-spacing: 0.04em;
+    }
+    .masthead-divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 24px auto;
+      max-width: 420px;
+    }
+    .masthead-divider span {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #6b5e44, transparent);
+    }
+    .masthead-divider-star {
+      color: var(--olive-light);
+      font-size: 0.9rem;
+    }
+    .masthead-meta {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      color: #6b5e44;
+      text-transform: uppercase;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .journal-wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── DISPATCH CARD ── */
+    .dispatch {
+      background-color: var(--paper);
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E"),
+        linear-gradient(
+          170deg,
+          var(--paper-light) 0%,
+          var(--paper) 40%,
+          var(--paper-dark) 100%
+        );
+      border-radius: 1px;
+      padding: 44px 48px 40px;
+      margin: 48px 0;
+      position: relative;
+      box-shadow:
+        2px 2px 0 rgba(0,0,0,0.2),
+        6px 6px 0 rgba(0,0,0,0.15),
+        12px 12px 24px rgba(0,0,0,0.45),
+        inset 0 0 60px rgba(0,0,0,0.04);
+      transform: rotate(-0.3deg);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .dispatch:nth-child(even) { transform: rotate(0.25deg); }
+    .dispatch:hover {
+      transform: rotate(0deg) translateY(-3px);
+      box-shadow:
+        2px 2px 0 rgba(0,0,0,0.2),
+        8px 8px 0 rgba(0,0,0,0.15),
+        20px 20px 36px rgba(0,0,0,0.5);
+    }
+
+    /* torn top edge */
+    .dispatch::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 0;
+      right: 0;
+      height: 10px;
+      background-color: var(--paper-light);
+      clip-path: polygon(
+        0% 100%, 1% 30%, 2.5% 80%, 4% 20%, 6% 70%, 8% 10%, 10% 60%,
+        12% 0%, 14% 55%, 16% 20%, 18% 75%, 20% 10%, 22% 65%, 25% 30%,
+        28% 80%, 31% 15%, 34% 70%, 37% 25%, 40% 85%, 43% 20%, 46% 65%,
+        49% 5%, 52% 55%, 55% 20%, 58% 70%, 61% 10%, 64% 60%, 67% 25%,
+        70% 75%, 73% 15%, 76% 65%, 79% 30%, 82% 80%, 85% 20%, 88% 70%,
+        91% 10%, 94% 60%, 96% 20%, 98% 75%, 100% 40%, 100% 100%
+      );
+    }
+
+    /* tape strip */
+    .dispatch-tape {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-1deg);
+      width: 110px;
+      height: 28px;
+      background: var(--tape);
+      backdrop-filter: blur(1px);
+      border: 1px solid rgba(200,180,120,0.2);
+    }
+    .dispatch-tape::after {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent, transparent 4px,
+        rgba(255,255,255,0.06) 4px, rgba(255,255,255,0.06) 5px
+      );
+    }
+
+    /* ── DISPATCH HEADER ── */
+    .dispatch-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--paper-dark);
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .dispatch-meta {
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      color: var(--ink-faded);
+      text-transform: uppercase;
+      line-height: 1.7;
+    }
+    .dispatch-meta strong {
+      color: var(--ink);
+      font-weight: normal;
+    }
+    .dispatch-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+    .badge-status {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border: 1px solid var(--olive);
+      color: var(--olive);
+    }
+
+    /* ── STAMP ── */
+    .stamp {
+      position: absolute;
+      top: 36px;
+      right: 42px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: var(--red-stamp);
+      border: 3px solid var(--red-stamp);
+      padding: 6px 12px;
+      text-transform: uppercase;
+      opacity: 0.55;
+      transform: rotate(8deg);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .stamp.olive {
+      color: var(--olive);
+      border-color: var(--olive);
+      transform: rotate(-5deg);
+      opacity: 0.45;
+    }
+
+    /* ── DISPATCH TITLE ── */
+    .dispatch-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.65rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink);
+      margin-bottom: 6px;
+      line-height: 1.1;
+    }
+    .dispatch-subtitle {
+      font-family: 'Libre Baskerville', serif;
+      font-style: italic;
+      font-size: 0.88rem;
+      color: var(--ink-faded);
+      margin-bottom: 22px;
+    }
+
+    /* ── BODY TEXT ── */
+    .dispatch-body {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.95rem;
+      line-height: 1.85;
+      color: var(--ink);
+      max-width: 600px;
+    }
+    .dispatch-body p { margin-bottom: 14px; }
+    .dispatch-body p:last-child { margin-bottom: 0; }
+    .dispatch-body .drop-cap::first-letter {
+      font-family: 'Oswald', sans-serif;
+      font-size: 3.2rem;
+      font-weight: 700;
+      float: left;
+      line-height: 0.8;
+      margin: 4px 8px 0 0;
+      color: var(--ink);
+    }
+
+    /* ── CASUALTY / STATS ROW ── */
+    .dispatch-stats {
+      display: flex;
+      gap: 0;
+      margin: 24px 0;
+      border: 1px solid var(--paper-dark);
+    }
+    .stat-block {
+      flex: 1;
+      padding: 10px 14px;
+      border-right: 1px solid var(--paper-dark);
+      text-align: center;
+    }
+    .stat-block:last-child { border-right: none; }
+    .stat-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-faded);
+      display: block;
+      margin-bottom: 3px;
+    }
+    .stat-value {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.1rem;
+      color: var(--ink);
+    }
+    .stat-value.danger { color: var(--red-stamp); }
+    .stat-value.ok { color: #3a5a2a; }
+
+    /* ── VIDEO FRAME ── */
+    .video-frame {
+      margin: 28px 0 0;
+      position: relative;
+    }
+    .video-frame-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-faded);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .video-frame-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--paper-dark);
+    }
+    .video-wrapper {
+      position: relative;
+      background: #0d0d0a;
+      border: 6px solid #2a2318;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.6), 3px 3px 0 #1a1510;
+      overflow: hidden;
+    }
+    .video-wrapper::before {
+      /* film grain overlay */
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 5;
+      mix-blend-mode: overlay;
+    }
+    .video-wrapper::after {
+      /* scanlines */
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.08) 2px,
+        rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 6;
+    }
+    .video-wrapper iframe {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16/9;
+      border: none;
+      filter: sepia(0.15) contrast(1.05);
+    }
+    /* placeholder when no video yet */
+    .video-placeholder {
+      width: 100%;
+      aspect-ratio: 16/9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #4a3e2a;
+      gap: 10px;
+    }
+    .video-placeholder-icon {
+      font-size: 2.8rem;
+      opacity: 0.4;
+    }
+    .video-placeholder-text {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      opacity: 0.5;
+    }
+
+    /* film strip holes */
+    .film-strip {
+      display: flex;
+      background: #1a1510;
+      padding: 5px 0;
+      justify-content: space-around;
+    }
+    .film-hole {
+      width: 14px;
+      height: 10px;
+      background: #0d0d0a;
+      border-radius: 2px;
+      border: 1px solid #2e2818;
+    }
+
+    /* ── SIGNATURE LINE ── */
+    .dispatch-sig {
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px dashed var(--paper-dark);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .sig-name {
+      font-family: 'Libre Baskerville', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--ink-faded);
+    }
+    .sig-tag {
+      font-size: 0.62rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #8a7a60;
+    }
+
+    /* ── DIVIDER BETWEEN ENTRIES ── */
+    .field-divider {
+      text-align: center;
+      margin: 0;
+      color: #4a4030;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      max-width: 860px;
+      margin: 60px auto 0;
+      padding: 0 24px;
+      text-align: center;
+    }
+    .footer-rule {
+      border: none;
+      border-top: 1px solid #3a3228;
+      margin-bottom: 24px;
+    }
+    .footer-text {
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      color: #4a4030;
+      text-transform: uppercase;
+    }
+    .footer-text a {
+      color: #7a6a50;
+      text-decoration: none;
+    }
+    .footer-text a:hover { color: var(--paper); }
+
+    /* ── SCROLL FADE-IN ── */
+    .dispatch {
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards;
+    }
+    .dispatch:nth-child(1) { animation-delay: 0.1s; }
+    .dispatch:nth-child(2) { animation-delay: 0.25s; }
+    .dispatch:nth-child(3) { animation-delay: 0.4s; }
+    .dispatch:nth-child(4) { animation-delay: 0.55s; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px) rotate(-0.3deg); }
+      to   { opacity: 1; }
+    }
+    .dispatch:nth-child(even) {
+      animation-name: fadeUpEven;
+    }
+    @keyframes fadeUpEven {
+      from { opacity: 0; transform: translateY(16px) rotate(0.25deg); }
+      to   { opacity: 1; }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .dispatch { padding: 32px 24px 28px; }
+      .stamp { display: none; }
+      .dispatch-header { flex-direction: column; }
+      .dispatch-badge { align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV BAND -->
+  <div class="top-band">
+    <div class="top-band-inner">
+      <a href="/">← Home</a>
+      <span class="top-band-title">Unrouted Controls / Field Dispatches</span>
+      <a href="https://uc.unrouted.org" target="_blank">uc.unrouted.org</a>
+    </div>
+  </div>
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <p class="masthead-eyebrow">Unrouted Controls Presents</p>
+    <h1>War Journal</h1>
+    <p class="masthead-sub">Field Dispatches from the Foxhole Front</p>
+    <div class="masthead-divider">
+      <span></span>
+      <span class="masthead-divider-star">✦</span>
+      <span></span>
+    </div>
+    <p class="masthead-meta">All entries are dramatized accounts of in-game events &nbsp;·&nbsp; Foxhole / Slay the Spire</p>
+  </header>
+
+  <!-- JOURNAL ENTRIES -->
+  <main class="journal-wrap">
+
+    <!-- ENTRY 1 -->
+    <article class="dispatch">
+      <div class="dispatch-tape"></div>
+      <div class="stamp">Transmitted</div>
+
+      <div class="dispatch-header">
+        <div class="dispatch-meta">
+          <strong>DATE:</strong> DAY 47 — HOUR 0312<br>
+          <strong>GRID:</strong> [REDACTED] — WESTERN SALIENT<br>
+          <strong>UNIT:</strong> Logistics — 3rd Provisional Column
+        </div>
+        <div class="dispatch-badge">
+          <span class="badge-status">Log. Run</span>
+        </div>
+      </div>
+
+      <h2 class="dispatch-title">Last Road to Cinder</h2>
+      <p class="dispatch-subtitle">Gun run to the final colonial foothold, Region V</p>
+
+      <div class="dispatch-stats">
+        <div class="stat-block">
+          <span class="stat-label">Trucks Out</span>
+          <span class="stat-value">3</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-label">Trucks In</span>
+          <span class="stat-value ok">3</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-label">Ambush Contact</span>
+          <span class="stat-value danger">Yes</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-label">Cargo Delivered</span>
+          <span class="stat-value ok">Full</span>
+        </div>
+      </div>
+
+      <div class="dispatch-body">
+        <p class="drop-cap">Had to do a gun run to Cinder Mill. It's our final foothold in the region — if it falls, we lose the whole salient. Stress was high before we even rolled out. Intel had the main road compromised so we staged from the secondary depot and hoped nobody was watching the ridge.</p>
+        <p>They were. About halfway in, tracers started walking up the left flank. Driver in truck two radioed he was taking fire and already rerouting north through the tree line. Lost comms for about four minutes — longest four minutes I've sat through in this war. Got them back right as they punched through to the alternate crossing.</p>
+        <p>We made it. All three trucks. Pulled into the stockpile yard with guns still warm and offloaded everything before the next artillery cycle came in. Cinder Mill held the line that night.</p>
+      </div>
+
+      <div class="video-frame">
+        <p class="video-frame-label">Field Recording — Attached Clip</p>
+        <div class="film-strip">
+          <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+          <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+          <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+          <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+        </div>
+        <div class="video-wrapper">
+          <!-- Replace the src with your YouTube embed URL when ready -->
+          <!-- Example: src="https://www.youtube.com/embed/YOUR_VIDEO_ID" -->
+          <div class="video-placeholder">
+            <div class="video-placeholder-icon">▶</div>
+            <div class="video-placeholder-text">Clip — Pending Upload</div>
+          </div>
+        </div>
+        <div class="film-strip">
+          <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+          <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+          <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+          <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+        </div>
+      </div>
+
+      <div class="dispatch-sig">
+        <span class="sig-name">— Hersh</span>
+        <span class="sig-tag">Foxhole · War #134 · Region V</span>
+      </div>
+    </article>
+
+    <!-- DIVIDER -->
+    <div class="field-divider">· · · ·</div>
+
+    <!-- ENTRY 2 — placeholder / template -->
+    <article class="dispatch">
+      <div class="dispatch-tape"></div>
+      <div class="stamp olive">Ongoing</div>
+
+      <div class="dispatch-header">
+        <div class="dispatch-meta">
+          <strong>DATE:</strong> [ENTRY DATE]<br>
+          <strong>GRID:</strong> [REGION / LOCATION]<br>
+          <strong>UNIT:</strong> [YOUR ROLE / UNIT]
+        </div>
+        <div class="dispatch-badge">
+          <span class="badge-status">[Op Type]</span>
+        </div>
+      </div>
+
+      <h2 class="dispatch-title">[Operation Name]</h2>
+      <p class="dispatch-subtitle">[Short description of what went down]</p>
+
+      <div class="dispatch-body">
+        <p class="drop-cap">Your entry goes here. Write it like a letter home or a field report — present tense, first person, in the moment. Describe the mission, the comms, the chaos. Keep it grounded.</p>
+        <p>Second paragraph. What happened next. What you saw, what it cost, what it meant for the front.</p>
+        <p>Close it out. Did it hold? Did it fall? What's next.</p>
+      </div>
+
+      <div class="video-frame">
+        <p class="video-frame-label">Field Recording — Attached Clip</p>
+        <div class="film-strip">
+          <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+          <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+          <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+          <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+        </div>
+        <div class="video-wrapper">
+          <!-- Swap placeholder div for iframe when ready:
+          <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen></iframe>
+          -->
+          <div class="video-placeholder">
+            <div class="video-placeholder-icon">▶</div>
+            <div class="video-placeholder-text">Clip — Pending Upload</div>
+          </div>
+        </div>
+        <div class="film-strip">
+          <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+          <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+          <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+          <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+        </div>
+      </div>
+
+      <div class="dispatch-sig">
+        <span class="sig-name">— Hersh</span>
+        <span class="sig-tag">Foxhole · War #[N] · [Region]</span>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <hr class="footer-rule" />
+    <p class="footer-text">
+      End of Transmission &nbsp;·&nbsp; <a href="/">Unrouted Controls</a> &nbsp;·&nbsp; All accounts dramatized
+    </p>
+  </footer>
+
+</body>
+</html>

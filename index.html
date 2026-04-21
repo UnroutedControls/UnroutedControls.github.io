@@ -263,7 +263,7 @@
     100% { transform: rotate(0deg); }
   }
 
-  .navbar { background: var(--teal); border-top: 3px ridge #c0c0c0; border-bottom: 3px ridge #c0c0c0; display: flex; justify-content: center; flex-wrap: wrap; gap: 2px; padding: 4px; }
+  .navbar { background: var(--teal); border-top: 3px ridge #c0c0c0; border-bottom: 3px ridge #c0c0c0; display: flex; justify-content: center; flex-wrap: wrap; gap: 2px; padding: 4px; overflow: visible; position: relative; z-index: 2; }
   .navbar a { background: linear-gradient(180deg, #dfdfdf 0%, #c0c0c0 45%, #808080 100%); color: #000000; text-decoration: none; padding: 4px 12px; font-family: 'VT323', monospace; font-size: 18px; border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff; display: inline-block; letter-spacing: 1px; }
   .navbar a:visited { color: #000000; }
   .navbar a:hover { background: linear-gradient(180deg, #808080 0%, #c0c0c0 45%, #dfdfdf 100%); border-color: #808080 #ffffff #ffffff #808080; color: #000000; }
@@ -470,6 +470,79 @@
     .right-col { display: none; }
   }
 
+
+  /* ===== WAR ISLAND NAV ===== */
+  .war-island-link {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    text-decoration: none;
+    position: relative;
+    padding: 2px 10px 3px;
+    background: linear-gradient(180deg, #0a0a0a 0%, #1a0808 45%, #0a0000 100%);
+    border: 2px solid;
+    border-color: #ff4400 #660000 #660000 #ff4400;
+    color: #ff4400;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 5px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    overflow: visible;
+    min-width: 80px;
+  }
+  .war-island-link:hover {
+    background: linear-gradient(180deg, #1a0000 0%, #2a0808 45%, #1a0000 100%);
+    border-color: #ff6600 #882200 #882200 #ff6600;
+    color: #ff6600;
+  }
+  .war-island-link:visited { color: #ff4400; }
+  .war-island-svg {
+    display: block;
+    image-rendering: pixelated;
+    animation: island-bob 2.8s ease-in-out infinite;
+    margin-bottom: 1px;
+    /* island floats above the nav bar */
+    margin-top: -28px;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8));
+  }
+  .war-island-link:hover .war-island-svg {
+    filter: drop-shadow(0 4px 12px rgba(255,80,0,0.5)) drop-shadow(0 0 6px rgba(255,100,0,0.3));
+  }
+  @keyframes island-bob {
+    0%   { transform: translateY(0px); }
+    30%  { transform: translateY(-4px); }
+    60%  { transform: translateY(-2px); }
+    80%  { transform: translateY(-5px); }
+    100% { transform: translateY(0px); }
+  }
+  /* smoke puffs on the island SVG */
+  .smoke1 { animation: smoke-rise 2s ease-out infinite; }
+  .smoke2 { animation: smoke-rise 2s ease-out infinite 0.7s; }
+  .smoke3 { animation: smoke-rise 1.8s ease-out infinite 1.2s; }
+  @keyframes smoke-rise {
+    0%   { transform: translateY(0) scaleX(1); opacity: 0.8; }
+    50%  { transform: translateY(-6px) scaleX(1.3); opacity: 0.5; }
+    100% { transform: translateY(-12px) scaleX(1.6); opacity: 0; }
+  }
+  /* muzzle flash */
+  .muzzle-flash {
+    animation: flash 0.8s steps(1) infinite;
+  }
+  @keyframes flash {
+    0%, 100% { opacity: 0; }
+    10%, 25%  { opacity: 1; }
+    35%       { opacity: 0; }
+  }
+  .shell-streak {
+    animation: shell 0.8s steps(3) infinite;
+  }
+  @keyframes shell {
+    0%   { transform: translateX(0); opacity: 1; }
+    60%  { transform: translateX(18px); opacity: 0.7; }
+    100% { transform: translateX(30px); opacity: 0; }
+  }
+
 </style>
 </head>
 <body>
@@ -625,7 +698,7 @@
 
   <div class="site-subtitle">
     <span class="stars">&#x2605;</span>
-    <a href="https://TheUnrouted.org" target="_blank" style="color: var(--cyan); text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Unrouted.org</a>
+    <a href="https://PathOfTheUnrouted.org" target="_blank" style="color: var(--cyan); text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">PathOfTheUnrouted.org</a>
     <span class="stars">&#x2605;</span>
   </div>
   <p style="font-size:15px; margin-top:8px; color: var(--silver);">[ est. 2025 | neocities | &lt;3 ]</p>
@@ -642,6 +715,149 @@
   <a href="/games.html">Games &amp; More</a>
   <a href="webring.html" style="background:linear-gradient(180deg,#001a00 0%,#003300 45%,#001a00 100%);border-color:#00ff00 #006600 #006600 #00ff00;color:#00ff00;text-shadow:0 0 5px #00ff00;">&#x1F916; WEBRING</a>
   <a href="brainstew.html" style="background:linear-gradient(180deg,#ffee88 0%,#ffcc00 45%,#cc8800 100%);border-color:#ffff88 #886600 #886600 #ffff88;color:#000;">&#x1F9E0; BRAIN STEW</a>
+  <a href="war-journal.html" class="war-island-link" title="War Journal — Field Dispatches from the Foxhole Front">
+    <svg class="war-island-svg" width="94" height="70" viewBox="0 0 94 70" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+
+  <!-- ── HANGING CHAINS (floating island) ── -->
+  <!-- left chain -->
+  <rect x="22" y="54" width="2" height="3" fill="#555"/>
+  <rect x="22" y="58" width="2" height="3" fill="#444"/>
+  <rect x="22" y="62" width="2" height="3" fill="#555"/>
+  <rect x="22" y="66" width="2" height="2" fill="#444"/>
+  <!-- right chain -->
+  <rect x="70" y="54" width="2" height="3" fill="#555"/>
+  <rect x="70" y="58" width="2" height="3" fill="#444"/>
+  <rect x="70" y="62" width="2" height="3" fill="#555"/>
+  <rect x="70" y="66" width="2" height="2" fill="#444"/>
+
+  <!-- ── ISLAND BODY ── -->
+  <!-- dirt underside (jagged bottom) -->
+  <rect x="14" y="48" width="66" height="8"  fill="#5c3d1e"/>
+  <rect x="18" y="54" width="58" height="4"  fill="#4a2e0e"/>
+  <rect x="22" y="56" width="50" height="3"  fill="#3a2008"/>
+  <!-- taper at edges -->
+  <rect x="10" y="46" width="74" height="4"  fill="#6b4720"/>
+  <rect x="8"  y="44" width="78" height="3"  fill="#5c3d1e"/>
+  <!-- grass top -->
+  <rect x="6"  y="36" width="82" height="10" fill="#2d5a1b"/>
+  <rect x="6"  y="36" width="82" height="3"  fill="#3d7a25"/>
+  <!-- grass bumps -->
+  <rect x="8"  y="34" width="4"  height="3"  fill="#3d7a25"/>
+  <rect x="16" y="33" width="6"  height="4"  fill="#3d7a25"/>
+  <rect x="26" y="34" width="4"  height="3"  fill="#2d5a1b"/>
+  <rect x="40" y="33" width="8"  height="4"  fill="#3d7a25"/>
+  <rect x="58" y="34" width="4"  height="3"  fill="#3d7a25"/>
+  <rect x="68" y="33" width="6"  height="4"  fill="#3d7a25"/>
+  <rect x="80" y="34" width="4"  height="3"  fill="#2d5a1b"/>
+
+  <!-- ── DEAD TREE (left) ── -->
+  <rect x="12" y="22" width="3" height="16" fill="#4a3018"/>
+  <rect x="9"  y="26" width="6" height="2"  fill="#4a3018"/>
+  <rect x="7"  y="28" width="4" height="2"  fill="#4a3018"/>
+  <rect x="14" y="24" width="5" height="2"  fill="#4a3018"/>
+  <rect x="16" y="22" width="3" height="2"  fill="#4a3018"/>
+
+  <!-- ── PALM TREE (right) ── -->
+  <rect x="76" y="16" width="3" height="22" fill="#6b4a20"/>
+  <!-- fronds -->
+  <rect x="69" y="14" width="10" height="2" fill="#2a7a20"/>
+  <rect x="67" y="12" width="8"  height="2" fill="#2a7a20"/>
+  <rect x="76" y="12" width="10" height="2" fill="#3a8a28"/>
+  <rect x="78" y="10" width="8"  height="2" fill="#2a7a20"/>
+  <rect x="73" y="8"  width="6"  height="4" fill="#3a8a28"/>
+  <!-- coconuts -->
+  <rect x="75" y="16" width="2" height="2"  fill="#8b4513"/>
+  <rect x="78" y="15" width="2" height="2"  fill="#8b4513"/>
+
+  <!-- ── TANK ── -->
+  <!-- tank body -->
+  <rect x="36" y="32" width="28" height="6"  fill="#4a5a20"/>
+  <rect x="38" y="28" width="22" height="6"  fill="#5a6a28"/>
+  <rect x="40" y="26" width="18" height="4"  fill="#4a5a20"/>
+  <!-- tank treads -->
+  <rect x="34" y="36" width="30" height="4"  fill="#2a2a2a"/>
+  <rect x="34" y="36" width="30" height="1"  fill="#3a3a3a"/>
+  <rect x="35" y="38" width="2"  height="2"  fill="#555"/>
+  <rect x="39" y="38" width="2"  height="2"  fill="#555"/>
+  <rect x="43" y="38" width="2"  height="2"  fill="#555"/>
+  <rect x="47" y="38" width="2"  height="2"  fill="#555"/>
+  <rect x="51" y="38" width="2"  height="2"  fill="#555"/>
+  <rect x="55" y="38" width="2"  height="2"  fill="#555"/>
+  <rect x="59" y="38" width="2"  height="2"  fill="#555"/>
+  <!-- turret -->
+  <rect x="44" y="22" width="16" height="6"  fill="#5a6a28"/>
+  <!-- gun barrel -->
+  <rect x="60" y="23" width="18" height="3"  fill="#3a4a18"/>
+  <rect x="62" y="22" width="16" height="2"  fill="#4a5a20"/>
+
+  <!-- MUZZLE FLASH -->
+  <g class="muzzle-flash">
+    <rect x="76" y="20" width="6" height="6"  fill="#ffcc00" opacity="0.9"/>
+    <rect x="78" y="18" width="4" height="10" fill="#ffaa00" opacity="0.7"/>
+    <rect x="74" y="22" width="10" height="4" fill="#ffffff" opacity="0.6"/>
+    <rect x="80" y="21" width="8" height="4"  fill="#ff8800" opacity="0.8"/>
+  </g>
+
+  <!-- SHELL STREAK -->
+  <g class="shell-streak">
+    <rect x="72" y="24" width="4" height="2"  fill="#ffdd44"/>
+    <rect x="74" y="24" width="2" height="1"  fill="#ffffff"/>
+  </g>
+
+  <!-- ── SOLDIERS ── -->
+  <!-- soldier 1 (left, running left with rifle) -->
+  <!-- head -->
+  <rect x="22" y="28" width="4" height="4"   fill="#c8a878"/>
+  <rect x="22" y="27" width="4" height="2"   fill="#4a5a20"/><!-- helmet -->
+  <!-- body -->
+  <rect x="22" y="32" width="4" height="4"   fill="#4a5a20"/>
+  <!-- left arm up (shooting) -->
+  <rect x="20" y="30" width="2" height="4"   fill="#4a5a20"/>
+  <!-- right arm -->
+  <rect x="26" y="32" width="3" height="2"   fill="#4a5a20"/>
+  <!-- rifle -->
+  <rect x="18" y="29" width="5" height="1"   fill="#2a1a0a"/>
+  <!-- legs running -->
+  <rect x="22" y="36" width="2" height="3"   fill="#2a3a10"/>
+  <rect x="24" y="36" width="2" height="3"   fill="#2a3a10"/>
+
+  <!-- soldier 2 (far left, crouching) -->
+  <!-- head -->
+  <rect x="8"  y="30" width="3" height="3"   fill="#c8a878"/>
+  <rect x="8"  y="29" width="3" height="2"   fill="#4a5a20"/>
+  <!-- body crouching -->
+  <rect x="7"  y="33" width="5" height="3"   fill="#4a5a20"/>
+  <!-- rifle forward -->
+  <rect x="11" y="31" width="6" height="1"   fill="#2a1a0a"/>
+  <!-- muzzle flash small -->
+  <g class="muzzle-flash">
+    <rect x="17" y="30" width="3" height="3" fill="#ffcc00" opacity="0.9"/>
+  </g>
+  <!-- legs -->
+  <rect x="7"  y="36" width="2" height="2"   fill="#2a3a10"/>
+  <rect x="10" y="35" width="2" height="2"   fill="#2a3a10"/>
+
+  <!-- ── EXPLOSION (right side, small) ── -->
+  <g class="muzzle-flash">
+    <rect x="84" y="28" width="4" height="4" fill="#ff6600" opacity="0.8"/>
+    <rect x="82" y="30" width="8" height="2" fill="#ffaa00" opacity="0.7"/>
+    <rect x="84" y="26" width="4" height="6" fill="#ff4400" opacity="0.6"/>
+    <rect x="86" y="24" width="2" height="2" fill="#ffdd00" opacity="0.9"/>
+    <rect x="80" y="26" width="2" height="2" fill="#ff8800" opacity="0.5"/>
+  </g>
+
+  <!-- ── SMOKE COLUMNS ── -->
+  <!-- smoke from tank barrel -->
+  <rect class="smoke1" x="77" y="16" width="4" height="4" fill="#888" rx="2" opacity="0.7"/>
+  <rect class="smoke2" x="75" y="10" width="6" height="5" fill="#999" rx="2" opacity="0.5"/>
+  <rect class="smoke3" x="76" y="4"  width="5" height="5" fill="#777" rx="2" opacity="0.3"/>
+  <!-- smoke from explosion right -->
+  <rect class="smoke2" x="84" y="22" width="4" height="4" fill="#888" rx="1" opacity="0.6"/>
+  <rect class="smoke1" x="83" y="16" width="5" height="5" fill="#777" rx="2" opacity="0.4"/>
+
+</svg>
+    WAR JOURNAL
+  </a>
 </nav>
 
 <div class="page-wrapper">
@@ -696,13 +912,13 @@
         <div class="btns"><div class="btn" onclick="toggleWin(this)">_</div><div class="btn" onclick="toggleWin(this)">&#x25A1;</div><div class="btn">&#x2715;</div></div>
       </div>
       <div class="win98-body link-list">
-        <a href="https://unrouted.org/" target="_blank">Another Link to TheUnrouted HQ</a>
+        <a href="https://pathoftheunrouted.org/" target="_blank">Another Link to PathOfTheUnrouted</a>
         <a href="https://github.com/bayandin/awesome-awesomeness?tab=readme-ov-file" target="_blank">awesome-awesomeness Index</a>
         <a href="https://archive.org/" target="_blank">internet archive</a>
         <a href="https://neocities.org/" target="_blank">neocities home</a>
         <a href="webring.html">&#x1F916; UC Webring</a>
-        <a href="https://neocities.org/site/unroutedcontrols" target="_blank">Follow Me on NeoCities!</a>
-        <a href="https://youtu.be/dQw4w9WgXcQ?si=UGVFu2CkfB9PyijB" target="_blank">Spare </a>
+        <a href="https://www.youtube.com/@MoreCrowns" target="_blank">One of my fav FiveM Trolls</a>
+        <a href="https://www.youtube.com/@bigcheefer" target="_blank">The Other One</a>
       </div>
     </div>
 
@@ -838,13 +1054,10 @@
       <div class="win98-body">
         <h3 class="about-section" style="margin-bottom:8px;">:: SITE UPDATES ::</h3>
         <div class="update-entry">
-          <span class="update-date">04/03/26</span> &#x2014; Created my own webring, and reworked some infrastructure so I can add posts by pushing markdown files to my repo
-        </div>
-        <div class="update-entry">
           <span class="update-date">02/27/26</span> &#x2014; TIME MACHINE launched!! nether portal in the header now!! click it to see site version history
         </div>
         <div class="update-entry">
-          <span class="update-date">02/22/26</span> &#x2014; launched the site!! hello world!! added guestbook + GAMES!!. site is VERY wip lol
+          <span class="update-date">02/22/26</span> &#x2014; launched the site!! hello world!! added guestbook + music player. site is VERY wip lol
         </div>
         <div class="update-entry">
           <span class="update-date">02/20/26</span> &#x2014; started coding this whole thing from scratch. said goodbye to my wordpress. good riddance
@@ -1088,7 +1301,7 @@
 
   // ── BS CHAT via Firebase Realtime DB (free, no login needed) ──
   // Uses a public anonymous Firebase project for demo — replace FIREBASE_URL with your own for production
-  const FIREBASE_URL = 'https://bs-chat-51b75-default-rtdb.firebaseio.com/';
+  const FIREBASE_URL = 'https://bschat-default-rtdb.firebaseio.com';
   let lastChatKey = null;
 
   function fmtTime(ts) {
