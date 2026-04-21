@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>COC WAR ROOM :: UNROUTED CONTROLS</title>
+  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;700;900&family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --stone:      #2a2535;
+      --stone-mid:  #3a3450;
+      --stone-light:#4a4465;
+      --stone-pale: #5a5478;
+      --parchment:  #e8d5a8;
+      --parchment-d:#c8aa70;
+      --parchment-l:#f4e8c4;
+      --ink:        #1a1008;
+      --ink-faded:  #3a2a10;
+      --gold:       #d4a017;
+      --gold-bright:#ffcc00;
+      --de:         #9900cc;       /* dark elixir purple */
+      --de-bright:  #cc44ff;
+      --elixir:     #ff44aa;       /* elixir pink */
+      --red:        #cc2200;
+      --star-full:  #ffcc00;
+      --star-empty: #444;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: #18141f;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 48px, rgba(255,255,255,0.012) 48px, rgba(255,255,255,0.012) 49px),
+        repeating-linear-gradient(90deg, transparent, transparent 48px, rgba(255,255,255,0.008) 48px, rgba(255,255,255,0.008) 49px),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+      font-family: 'IM Fell English', Georgia, serif;
+      color: var(--parchment);
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+
+    /* ── BATTLEMENTS TOP BAR ── */
+    .battlements {
+      background: var(--stone);
+      border-bottom: 3px solid #1a1428;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    /* pixel-art crenellations */
+    .crenellations {
+      display: flex;
+      background: var(--stone-mid);
+      height: 14px;
+    }
+    .merlon {
+      width: 20px; height: 14px;
+      background: var(--stone-mid);
+      border-right: 1px solid #1a1428;
+      flex-shrink: 0;
+    }
+    .gap {
+      width: 12px; height: 8px;
+      background: #18141f;
+      align-self: flex-end;
+      border-right: 1px solid #1a1428;
+      flex-shrink: 0;
+    }
+    .top-nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 24px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .top-nav-inner a {
+      color: var(--gold);
+      text-decoration: none;
+      font-family: 'Cinzel', serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .top-nav-inner a:hover { color: var(--gold-bright); }
+    .top-nav-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      color: var(--stone-pale);
+      text-transform: uppercase;
+    }
+
+    /* ── MASTHEAD ── */
+    .masthead {
+      max-width: 900px;
+      margin: 48px auto 0;
+      padding: 0 24px;
+      text-align: center;
+      position: relative;
+    }
+
+    /* shield decoration */
+    .shield-deco {
+      display: block;
+      margin: 0 auto 16px;
+      image-rendering: pixelated;
+    }
+
+    .masthead-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.4em;
+      color: var(--stone-pale);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .masthead h1 {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(2rem, 6vw, 4.2rem);
+      font-weight: 900;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      line-height: 1.05;
+      text-shadow: 2px 2px 0 #0a0808, 0 0 30px rgba(212,160,23,0.3), 0 0 60px rgba(212,160,23,0.1);
+    }
+    .masthead-sub {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--parchment-d);
+      margin: 10px 0 0;
+    }
+
+    /* gold divider */
+    .gold-divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      max-width: 440px;
+      margin: 22px auto;
+    }
+    .gold-divider span { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+    .gold-divider-gem { color: var(--de-bright); font-size: 1rem; text-shadow: 0 0 8px var(--de); }
+
+    .masthead-meta {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: #6a6080;
+      text-transform: uppercase;
+    }
+
+    /* ── MAIN WRAP ── */
+    .warroom-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── INTEL CARD ── */
+    .intel-card {
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E"),
+        linear-gradient(160deg, var(--parchment-l) 0%, var(--parchment) 45%, var(--parchment-d) 100%);
+      border: 3px solid var(--gold);
+      border-radius: 2px;
+      padding: 36px 44px 32px;
+      margin: 48px 0;
+      position: relative;
+      box-shadow:
+        0 0 0 6px rgba(212,160,23,0.08),
+        0 0 0 8px rgba(0,0,0,0.4),
+        6px 6px 0 rgba(0,0,0,0.4),
+        14px 14px 28px rgba(0,0,0,0.6),
+        inset 0 0 40px rgba(0,0,0,0.06);
+      color: var(--ink);
+      opacity: 0;
+      animation: card-rise 0.6s ease forwards;
+    }
+    .intel-card:nth-child(1) { animation-delay: 0.1s; }
+    .intel-card:nth-child(2) { animation-delay: 0.22s; }
+    .intel-card:nth-child(3) { animation-delay: 0.34s; }
+    .intel-card:nth-child(4) { animation-delay: 0.46s; }
+    @keyframes card-rise {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* corner ornaments */
+    .intel-card::before, .intel-card::after {
+      content: '✦';
+      position: absolute;
+      font-size: 1rem;
+      color: var(--gold);
+      opacity: 0.6;
+    }
+    .intel-card::before { top: 8px; left: 12px; }
+    .intel-card::after  { bottom: 8px; right: 12px; }
+
+    /* classified stamp */
+    .stamp-classified {
+      position: absolute;
+      top: 28px; right: 36px;
+      font-family: 'Cinzel', serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      color: var(--red);
+      border: 3px solid var(--red);
+      padding: 5px 10px;
+      text-transform: uppercase;
+      opacity: 0.5;
+      transform: rotate(6deg);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .stamp-victory {
+      color: #006600;
+      border-color: #006600;
+      transform: rotate(-4deg);
+      opacity: 0.45;
+    }
+    .stamp-defeat {
+      color: var(--red);
+      border-color: var(--red);
+      transform: rotate(5deg);
+    }
+
+    /* ── CARD HEADER ── */
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--parchment-d);
+      margin-bottom: 18px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .card-meta {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      color: var(--ink-faded);
+      text-transform: uppercase;
+      line-height: 1.8;
+    }
+    .card-meta strong { color: var(--ink); font-weight: 700; }
+
+    /* TH badge */
+    .th-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .th-shield {
+      background: linear-gradient(180deg, #3a2a80 0%, #1a0a50 100%);
+      border: 2px solid var(--gold);
+      width: 52px; height: 58px;
+      clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column;
+      font-family: 'Cinzel', serif;
+      color: var(--gold-bright);
+      text-align: center;
+    }
+    .th-label { font-size: 0.5rem; letter-spacing: 0.1em; opacity: 0.8; }
+    .th-num   { font-size: 1.3rem; font-weight: 900; line-height: 1; text-shadow: 0 0 8px var(--gold); }
+
+    /* ── STARS DISPLAY ── */
+    .stars-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 14px 0 4px;
+    }
+    .star-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink-faded);
+      margin-right: 4px;
+    }
+    .star { font-size: 1.4rem; line-height: 1; }
+    .star.full  { color: var(--star-full); text-shadow: 0 0 8px rgba(255,204,0,0.6); }
+    .star.empty { color: var(--star-empty); }
+    .destruction {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      color: var(--ink-faded);
+      margin-left: 6px;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── STAT GRID ── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+      border: 1px solid var(--parchment-d);
+      margin: 18px 0;
+    }
+    .stat-cell {
+      padding: 10px 12px;
+      border-right: 1px solid var(--parchment-d);
+      text-align: center;
+    }
+    .stat-cell:last-child { border-right: none; }
+    .stat-cell-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.52rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-faded);
+      display: block;
+      margin-bottom: 3px;
+    }
+    .stat-cell-val {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .stat-cell-val.gold   { color: #8b6000; }
+    .stat-cell-val.de     { color: #6600aa; }
+    .stat-cell-val.threat { color: var(--red); }
+    .stat-cell-val.ok     { color: #006600; }
+
+    /* ── TROOP COMPOSITION ── */
+    .troop-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 14px 0;
+      padding: 10px 12px;
+      background: rgba(0,0,0,0.06);
+      border: 1px solid var(--parchment-d);
+    }
+    .troop-chip {
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: var(--stone);
+      color: var(--parchment);
+      padding: 3px 8px;
+      border: 1px solid var(--gold);
+      border-radius: 1px;
+    }
+    .troop-chip.hero  { border-color: var(--de-bright); color: var(--de-bright); background: #1a0030; }
+    .troop-chip.spell { border-color: var(--elixir);    color: var(--elixir);    background: #200015; }
+    .troop-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-faded);
+      display: block;
+      margin-bottom: 5px;
+      width: 100%;
+    }
+
+    /* ── ATTACK PLAN SECTION ── */
+    .plan-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-faded);
+      border-top: 1px dashed var(--parchment-d);
+      padding-top: 14px;
+      margin-top: 16px;
+      margin-bottom: 8px;
+    }
+    .intel-card h2 {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+      margin-bottom: 4px;
+      line-height: 1.1;
+    }
+    .intel-card .card-subtitle {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 0.88rem;
+      color: var(--ink-faded);
+      margin-bottom: 16px;
+    }
+    .intel-card p {
+      font-family: 'IM Fell English', serif;
+      font-size: 0.96rem;
+      line-height: 1.85;
+      color: var(--ink);
+      margin-bottom: 10px;
+    }
+    .intel-card p.drop-cap::first-letter {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 2.8rem;
+      font-weight: 700;
+      float: left;
+      line-height: 0.82;
+      margin: 4px 8px 0 0;
+      color: var(--ink);
+    }
+    .intel-card ul {
+      font-family: 'IM Fell English', serif;
+      font-size: 0.92rem;
+      line-height: 1.8;
+      margin: 0 0 12px 18px;
+      color: var(--ink);
+    }
+    .intel-card li::marker { content: '⚔ '; font-size: 0.8rem; }
+    .intel-card strong { font-weight: 700; }
+    .intel-card em { font-style: italic; }
+
+    /* ── BASE NOTES / MAP GRID ── */
+    .base-notes {
+      background: rgba(0,0,0,0.07);
+      border: 1px solid var(--parchment-d);
+      border-left: 4px solid var(--gold);
+      padding: 10px 14px;
+      margin: 14px 0;
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      color: var(--ink-faded);
+      line-height: 1.8;
+      text-transform: uppercase;
+    }
+    .base-notes-title {
+      font-size: 0.58rem;
+      letter-spacing: 0.22em;
+      color: #8b6000;
+      margin-bottom: 5px;
+      display: block;
+      text-transform: uppercase;
+    }
+
+    /* ── RESULT OUTCOME ── */
+    .outcome-bar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 18px 0 0;
+      padding: 10px 14px;
+      background: rgba(0,0,0,0.05);
+      border: 1px solid var(--parchment-d);
+    }
+    .outcome-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-faded);
+      flex-shrink: 0;
+    }
+    .outcome-val {
+      font-family: 'Cinzel', serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+    .outcome-val.win  { color: #006600; }
+    .outcome-val.loss { color: var(--red); }
+    .outcome-val.plan { color: #6600aa; }
+
+    /* ── CARD SIGNATURE ── */
+    .card-sig {
+      margin-top: 24px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--parchment-d);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .sig-name {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--ink-faded);
+    }
+    .sig-tag {
+      font-family: 'Cinzel', serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #8a7a50;
+    }
+
+    /* ── DIVIDER ── */
+    .rune-divider {
+      text-align: center;
+      margin: 4px 0;
+      color: #3a3050;
+      font-size: 1.1rem;
+      letter-spacing: 0.5em;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      max-width: 900px;
+      margin: 60px auto 0;
+      padding: 0 24px;
+      text-align: center;
+    }
+    .footer-rule { border: none; border-top: 1px solid #2a2040; margin-bottom: 20px; }
+    .footer-text {
+      font-family: 'Cinzel', serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      color: #3a3050;
+      text-transform: uppercase;
+    }
+    .footer-text a { color: #5a5070; text-decoration: none; }
+    .footer-text a:hover { color: var(--gold); }
+
+    @media (max-width: 600px) {
+      .intel-card { padding: 24px 18px 20px; }
+      .stamp-classified { display: none; }
+      .card-header { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BATTLEMENTS -->
+  <div class="battlements">
+    <div class="crenellations" id="crens"></div>
+    <div class="top-nav-inner">
+      <a href="index.html">&#x2190; Home Base</a>
+      <span class="top-nav-title">Unrouted Controls / CoC War Room</span>
+      <a href="https://uc.unrouted.org" target="_blank">uc.unrouted.org</a>
+    </div>
+  </div>
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+
+    <!-- pixel shield -->
+    <svg class="shield-deco" width="60" height="70" viewBox="0 0 60 70" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+      <polygon points="2,2 58,2 58,46 30,68 2,46" fill="#1a0a50" stroke="#d4a017" stroke-width="2"/>
+      <polygon points="6,6 54,6 54,44 30,62 6,44" fill="#2a1a70" stroke="#d4a017" stroke-width="1" opacity="0.5"/>
+      <!-- crossed swords on shield -->
+      <rect x="15" y="14" width="30" height="3" fill="#d4a017" transform="rotate(45 30 35)"/>
+      <rect x="15" y="14" width="30" height="3" fill="#d4a017" transform="rotate(-45 30 35)"/>
+      <!-- DE gem center -->
+      <rect x="26" y="30" width="8" height="8" fill="#cc44ff"/>
+      <rect x="28" y="32" width="4" height="4" fill="#ff88ff"/>
+    </svg>
+
+    <p class="masthead-eyebrow">Unrouted Controls Presents</p>
+    <h1>War Room</h1>
+    <p class="masthead-sub">Clash of Clans — Intelligence Reports &amp; Attack Briefs</p>
+    <div class="gold-divider">
+      <span></span>
+      <span class="gold-divider-gem">&#x2694;</span>
+      <span></span>
+    </div>
+    <p class="masthead-meta">All entries are clan war attack analyses &nbsp;&middot;&nbsp; Hersh / UC</p>
+  </header>
+
+  <!-- INTEL CARDS -->
+  <main class="warroom-wrap">
+
+    <!-- ════════════════════════════════════════════════════════════════
+         HOW TO ADD AN ENTRY — copy one <article class="intel-card">
+         block and update:
+           - War #, opponent name, date, TH level
+           - Stars (.star.full / .star.empty), destruction %
+           - Stat grid values
+           - Troop composition chips
+           - Attack plan text
+           - Base notes
+           - Outcome bar
+           - Signature tag
+
+         Stamp classes:
+           .stamp-victory  = green "VICTORY"
+           .stamp-defeat   = red "DEFEATED"
+           (or remove stamp for a pre-attack plan)
+    ════════════════════════════════════════════════════════════════ -->
+
+    <!-- ═══ ENTRY 1 — EXAMPLE ATTACK BREAKDOWN ═══ -->
+    <article class="intel-card">
+      <div class="stamp-classified stamp-victory">Victory</div>
+
+      <div class="card-header">
+        <div class="card-meta">
+          <strong>WAR #:</strong> [WAR NUMBER]<br>
+          <strong>OPPONENT:</strong> [PLAYER NAME / CLAN]<br>
+          <strong>DATE:</strong> [MM/DD/YY]<br>
+          <strong>BASE POS:</strong> #[N] of [TOTAL]
+        </div>
+        <div class="th-badge">
+          <div class="th-shield">
+            <span class="th-label">TH</span>
+            <span class="th-num">16</span>
+          </div>
+        </div>
+      </div>
+
+      <h2>[Operation Name]</h2>
+      <p class="card-subtitle">[One sentence describing the base or situation]</p>
+
+      <!-- STARS -->
+      <div class="stars-row">
+        <span class="star-label">Result</span>
+        <span class="star full">&#x2605;</span>
+        <span class="star full">&#x2605;</span>
+        <span class="star full">&#x2605;</span>
+        <span class="destruction">100% destruction</span>
+      </div>
+
+      <!-- STAT GRID -->
+      <div class="stat-grid">
+        <div class="stat-cell">
+          <span class="stat-cell-label">Base Type</span>
+          <span class="stat-cell-val">[Ring / Box / Spread]</span>
+        </div>
+        <div class="stat-cell">
+          <span class="stat-cell-label">Air Defenses</span>
+          <span class="stat-cell-val threat">[N]</span>
+        </div>
+        <div class="stat-cell">
+          <span class="stat-cell-label">Threat Level</span>
+          <span class="stat-cell-val threat">[High/Med/Low]</span>
+        </div>
+        <div class="stat-cell">
+          <span class="stat-cell-label">Outcome</span>
+          <span class="stat-cell-val ok">3 &#x2605;</span>
+        </div>
+      </div>
+
+      <!-- TROOP COMPOSITION -->
+      <div class="troop-bar">
+        <span class="troop-label">Troop Composition</span>
+        <span class="troop-chip hero">Barbarian King</span>
+        <span class="troop-chip hero">Archer Queen</span>
+        <span class="troop-chip hero">Grand Warden</span>
+        <span class="troop-chip">Electro Dragon x4</span>
+        <span class="troop-chip">Balloon x8</span>
+        <span class="troop-chip">Minion x10</span>
+        <span class="troop-chip spell">Lightning x3</span>
+        <span class="troop-chip spell">Earthquake x2</span>
+        <span class="troop-chip spell">Haste x2</span>
+      </div>
+
+      <!-- ATTACK PLAN -->
+      <div class="plan-title">&#x2694; Intelligence Brief &amp; Attack Plan</div>
+
+      <div class="base-notes">
+        <span class="base-notes-title">Base Assessment</span>
+        Town Hall tucked bottom-right behind triple-layer walls. Scattershot placement covers south approach.
+        Air defenses clustered center — lightning can neutralize. Eagle Artillery mid-map, line of sight west.
+        Weak point: top-left compartment thin, single-inferno.
+      </div>
+
+      <p class="drop-cap">Entry paragraph — describe the base layout and what you noticed first. What made this base interesting or dangerous. Talk about the placement of key defenses like the Town Hall, Eagle Artillery, Scattershots, Infernos.</p>
+
+      <p>Second paragraph — your plan. What funnel did you set up? Where did the heroes enter? How did you handle the air defenses — did you lightning them out first? Walk through the strategy step by step like you're briefing a clanmate.</p>
+
+      <p>Third paragraph — what actually happened. Did it go to plan? What went sideways? Any defenses you underestimated? Close it out with the result and what you'd do differently.</p>
+
+      <div class="outcome-bar">
+        <span class="outcome-label">Final Outcome</span>
+        <span class="outcome-val win">&#x2605;&#x2605;&#x2605; — 3 Star Secured</span>
+      </div>
+
+      <div class="card-sig">
+        <span class="sig-name">&mdash; Hersh</span>
+        <span class="sig-tag">CoC &middot; War #[N] &middot; [Clan Name]</span>
+      </div>
+    </article>
+
+    <div class="rune-divider">&#x2694; &nbsp; &#x2694; &nbsp; &#x2694;</div>
+
+    <!-- ═══ ENTRY 2 — PRE-ATTACK PLAN (before war attack) ═══ -->
+    <article class="intel-card">
+      <div class="stamp-classified" style="color:#6600aa;border-color:#6600aa;transform:rotate(-6deg);">Intel Brief</div>
+
+      <div class="card-header">
+        <div class="card-meta">
+          <strong>WAR #:</strong> [WAR NUMBER]<br>
+          <strong>TARGET:</strong> [PLAYER NAME]<br>
+          <strong>DATE:</strong> [MM/DD/YY]<br>
+          <strong>BASE POS:</strong> #[N]
+        </div>
+        <div class="th-badge">
+          <div class="th-shield">
+            <span class="th-label">TH</span>
+            <span class="th-num">15</span>
+          </div>
+        </div>
+      </div>
+
+      <h2>[Operation Name]</h2>
+      <p class="card-subtitle">[Pre-attack intel / scouting notes]</p>
+
+      <!-- no stars yet — pre attack -->
+      <div class="stars-row">
+        <span class="star-label">Target</span>
+        <span class="star empty">&#x2605;</span>
+        <span class="star empty">&#x2605;</span>
+        <span class="star empty">&#x2605;</span>
+        <span class="destruction">Pending attack</span>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-cell">
+          <span class="stat-cell-label">Base Type</span>
+          <span class="stat-cell-val">[Type]</span>
+        </div>
+        <div class="stat-cell">
+          <span class="stat-cell-label">Air Defenses</span>
+          <span class="stat-cell-val threat">[N]</span>
+        </div>
+        <div class="stat-cell">
+          <span class="stat-cell-label">Threat Level</span>
+          <span class="stat-cell-val threat">[High/Med/Low]</span>
+        </div>
+        <div class="stat-cell">
+          <span class="stat-cell-label">Troop Type</span>
+          <span class="stat-cell-val">[Air/Ground]</span>
+        </div>
+      </div>
+
+      <div class="troop-bar">
+        <span class="troop-label">Planned Composition</span>
+        <span class="troop-chip hero">Barbarian King</span>
+        <span class="troop-chip hero">Archer Queen</span>
+        <span class="troop-chip">Super Witch x3</span>
+        <span class="troop-chip">Golem x2</span>
+        <span class="troop-chip">Bowler x8</span>
+        <span class="troop-chip spell">Freeze x3</span>
+        <span class="troop-chip spell">Rage x2</span>
+      </div>
+
+      <div class="plan-title">&#x2694; Planned Approach</div>
+
+      <div class="base-notes">
+        <span class="base-notes-title">Scouting Report</span>
+        [Describe what you see in the base — wall layout, defense placement, TH location, potential weak points.]
+      </div>
+
+      <p class="drop-cap">Pre-attack analysis paragraph. Describe the base you're looking at. What's the layout? Where is the TH sitting? What's the biggest threat — is it the Scattershots, the Infernos, the Eagle? What did previous attackers do wrong on this base?</p>
+
+      <p>Your planned strategy. Where are you funneling in? How are you handling the key defenses? What's your hero walk plan? Where are the spells going? Be specific — good plans win wars.</p>
+
+      <div class="outcome-bar">
+        <span class="outcome-label">Status</span>
+        <span class="outcome-val plan">&#x2694; Attack Pending — Plan Locked</span>
+      </div>
+
+      <div class="card-sig">
+        <span class="sig-name">&mdash; Hersh</span>
+        <span class="sig-tag">CoC &middot; War #[N] &middot; [Clan]</span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <hr class="footer-rule"/>
+    <p class="footer-text">
+      End of Briefing &nbsp;&middot;&nbsp; <a href="index.html">Unrouted Controls</a> &nbsp;&middot;&nbsp; For the Clan
+    </p>
+  </footer>
+
+  <script>
+    // Fill battlements dynamically to fit width
+    const crens = document.getElementById('crens');
+    const W = window.innerWidth;
+    let x = 0;
+    while (x < W) {
+      const m = document.createElement('div');
+      m.className = 'merlon';
+      crens.appendChild(m);
+      x += 20;
+      if (x < W) {
+        const g = document.createElement('div');
+        g.className = 'gap';
+        crens.appendChild(g);
+        x += 12;
+      }
+    }
+  </script>
+</body>
+</html>
