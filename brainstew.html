@@ -314,6 +314,16 @@
             <div>04/21/26</div>
         </div>
 
+
+
+        <div class="inbox-item unread" data-post-id="post-q1tj">
+          <div>&#x1F4E7;</div>
+          <div class="dot-cell">&#x25CF;</div>
+          <div>Understanding Aliases in Linux</div>
+          <div>uc</div>
+          <div>04/24/26</div>
+        </div>
+
           <!-- more rows here -->
 
         </div>
@@ -465,9 +475,60 @@ Baby #2 will be joining us shortly and my to-do list is longer than the phone bo
 </script>
 
 
+<!--POST TWO-->
+<script type="text/markdown" id="post-q1tj" data-title="Understanding Aliases in Linux" data-date="04/24/26">
+
+
+Aliases in Linux are shortcuts for commands. You can create two types of aliases: temporary and permanent.
+
+## Temporary Aliases
+
+Temporary aliases only last for the current terminal session. 
+
+```
+alias shortcut-name='command'
+```
+
+
+
+##   Permanent Aliases
+
+Permanent aliases remain available across terminal sessions. To create them, you need to add them to your shell configuration file.
+
+### Howto: Create Permanent Aliases
+
+1. Open the configuration file:
+    - For Bash, use: `nano ~/.bashrc`
+    - For Zsh, use: `nano ~/.zshrc`
+2. Add your alias:
+    
+    - Use the same syntax as before:
+        
+      `alias shortcut-name='command'`
+       
+        
+3. Save and exit the editor.
+    
+4. Apply the changes:
+    
+    - Run `source ~/.bashrc` or `source ~/.zshrc` to make the aliases available immediately.
+
+### Example
+
+To create a permanent alias for updating the system:
+
+```
+alias update='sudo apt update && sudo apt upgrade -y'
+```
+
+</script>
+
 
 
 <!-- add more markdown posts here -->
+
+
+
 <!-- Post Template -->
 <script type="text/markdown" id="post-2" data-title="POST TITLE HERE" data-date="02/22/26">
   #markdown and content goes in here

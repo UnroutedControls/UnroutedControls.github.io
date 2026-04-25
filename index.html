@@ -471,7 +471,51 @@
   }
 
 
-  
+  /* ===== WAR ISLAND NAV ===== */
+  .war-island-link {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    text-decoration: none;
+    position: relative;
+    padding: 2px 10px 3px;
+    background: linear-gradient(180deg, #0a0a0a 0%, #1a0808 45%, #0a0000 100%);
+    border: 2px solid;
+    border-color: #ff4400 #660000 #660000 #ff4400;
+    color: #ff4400;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 5px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    overflow: visible;
+    min-width: 80px;
+  }
+  .war-island-link:hover {
+    background: linear-gradient(180deg, #1a0000 0%, #2a0808 45%, #1a0000 100%);
+    border-color: #ff6600 #882200 #882200 #ff6600;
+    color: #ff6600;
+  }
+  .war-island-link:visited { color: #ff4400; }
+  .war-island-svg {
+    display: block;
+    image-rendering: pixelated;
+    animation: island-bob 2.8s ease-in-out infinite;
+    margin-bottom: 1px;
+    /* island floats above the nav bar */
+    margin-top: -60px;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8));
+  }
+  .war-island-link:hover .war-island-svg {
+    filter: drop-shadow(0 4px 12px rgba(255,80,0,0.5)) drop-shadow(0 0 6px rgba(255,100,0,0.3));
+  }
+  @keyframes island-bob {
+    0%   { transform: translateY(0px); }
+    30%  { transform: translateY(-4px); }
+    60%  { transform: translateY(-2px); }
+    80%  { transform: translateY(-5px); }
+    100% { transform: translateY(0px); }
+  }
   /* smoke puffs on the island SVG */
   .smoke1 { animation: smoke-rise 2s ease-out infinite; }
   .smoke2 { animation: smoke-rise 2s ease-out infinite 0.7s; }
@@ -498,115 +542,6 @@
     60%  { transform: translateX(18px); opacity: 0.7; }
     100% { transform: translateX(30px); opacity: 0; }
   }
-
-
-  /* ===== FLOATING NAV BUTTONS (art extends above navbar) ===== */
-  /* Navbar must allow overflow for the art to float above */
-  .navbar {
-    overflow: visible !important;
-    position: relative;
-    z-index: 2;
-  }
-
-  /* Base style for both floating art buttons */
-  .nav-float-btn {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-    text-decoration: none;
-    position: relative;
-    /* Same padding as normal navbar buttons */
-    padding: 4px 10px;
-    font-family: 'VT323', monospace;
-    font-size: 18px;
-    border: 2px solid;
-    letter-spacing: 1px;
-    cursor: pointer;
-    /* Extra top padding to reserve space for the floating art */
-    padding-top: 6px;
-  }
-  .nav-float-btn:visited { text-decoration: none; }
-
-  /* The art sits absolutely above the button */
-  .nav-float-art {
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    pointer-events: none;
-    /* small gap between art and button top */
-    margin-bottom: -2px;
-    image-rendering: pixelated;
-  }
-
-  /* ── WAR JOURNAL button ── */
-  .nav-war {
-    background: linear-gradient(180deg, #0a0a0a 0%, #1a0808 45%, #0a0000 100%);
-    border-color: #cc3300 #660000 #660000 #cc3300;
-    color: #ff4400;
-  }
-  .nav-war:hover {
-    background: linear-gradient(180deg, #1a0000 0%, #2a0808 45%, #1a0000 100%);
-    border-color: #ff5500 #882200 #882200 #ff5500;
-    color: #ff6600;
-  }
-  .nav-war:visited { color: #ff4400; }
-
-  /* war island bob animation */
-  .war-island-svg { animation: island-bob 2.8s ease-in-out infinite; }
-  .nav-war:hover .war-island-svg {
-    filter: drop-shadow(0 0 6px rgba(255,80,0,0.6));
-    animation-play-state: paused;
-  }
-  @keyframes island-bob {
-    0%,100% { transform: translateY(0); }
-    35%      { transform: translateY(-5px); }
-    70%      { transform: translateY(-2px); }
-  }
-  .war-muzzle { animation: war-flash 0.8s steps(1) infinite; }
-  @keyframes war-flash { 0%,100%{opacity:0;} 12%,28%{opacity:1;} 38%{opacity:0;} }
-  .war-smoke1 { animation: wsmoke 2s ease-out infinite; }
-  .war-smoke2 { animation: wsmoke 2s ease-out infinite 0.7s; }
-  .war-smoke3 { animation: wsmoke 1.8s ease-out infinite 1.3s; }
-  @keyframes wsmoke { 0%{transform:translateY(0);opacity:0.8;} 100%{transform:translateY(-10px);opacity:0;} }
-
-  /* ── CLASH OF CLANS button ── */
-  .nav-coc {
-    background: linear-gradient(180deg, #0a0520 0%, #1a0a44 45%, #0a0520 100%);
-    border-color: #aa44ff #440088 #440088 #aa44ff;
-    color: #cc88ff;
-  }
-  .nav-coc:hover {
-    background: linear-gradient(180deg, #140830 0%, #220a5a 45%, #140830 100%);
-    border-color: #cc66ff #660099 #660099 #cc66ff;
-    color: #eeb0ff;
-  }
-  .nav-coc:visited { color: #cc88ff; }
-
-  /* barb king animation */
-  .coc-king-svg { animation: king-idle 1.8s ease-in-out infinite; }
-  .nav-coc:hover .coc-king-svg {
-    animation: king-attack 0.4s steps(2) infinite;
-    filter: drop-shadow(0 0 8px rgba(200,100,255,0.7));
-  }
-  @keyframes king-idle {
-    0%,100% { transform: translateY(0) scaleX(1); }
-    50%      { transform: translateY(-3px) scaleX(1); }
-  }
-  @keyframes king-attack {
-    0%   { transform: translateX(-2px) rotate(-5deg); }
-    100% { transform: translateX(2px) rotate(5deg); }
-  }
-  /* sword swing */
-  .coc-sword { transform-origin: 10px 38px; animation: sword-idle 1.8s ease-in-out infinite; }
-  .nav-coc:hover .coc-sword { animation: sword-swing 0.4s steps(2) infinite; }
-  @keyframes sword-idle { 0%,100%{transform:rotate(0deg);} 50%{transform:rotate(-8deg);} }
-  @keyframes sword-swing { 0%{transform:rotate(-30deg);} 100%{transform:rotate(20deg);} }
-  /* dark elixir drips */
-  .de-drip { animation: drip 1.5s ease-in infinite; }
-  .de-drip2 { animation: drip 1.5s ease-in infinite 0.5s; }
-  @keyframes drip { 0%{transform:translateY(0);opacity:1;} 100%{transform:translateY(6px);opacity:0;} }
 
 </style>
 </head>
@@ -779,153 +714,149 @@
   <a href="#links">LINKS</a>
   <a href="/games.html">Games &amp; More</a>
   <a href="webring.html" style="background:linear-gradient(180deg,#001a00 0%,#003300 45%,#001a00 100%);border-color:#00ff00 #006600 #006600 #00ff00;color:#00ff00;text-shadow:0 0 5px #00ff00;">&#x1F916; WEBRING</a>
-  <a href="brainstew.html" style="background:linear-gradient(180deg,#ffee88 0%,#ffcc00 45%,#cc8800 100%);border-color:#ffff88 #886600 #ffff88;color:#000;">&#x1F9E0; BRAIN STEW</a>
-  <a href="war-journal.html" class="nav-float-btn nav-war">
-    <svg class="war-island-svg nav-float-art" width="86" height="56" viewBox="0 0 86 56" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
-    <!-- chains -->
-    <rect x="20" y="42" width="2" height="3" fill="#555"/><rect x="20" y="46" width="2" height="3" fill="#444"/><rect x="20" y="50" width="2" height="3" fill="#555"/>
-    <rect x="64" y="42" width="2" height="3" fill="#555"/><rect x="64" y="46" width="2" height="3" fill="#444"/><rect x="64" y="50" width="2" height="3" fill="#555"/>
-    <!-- island dirt -->
-    <rect x="8"  y="34" width="70" height="9"  fill="#5c3d1e"/>
-    <rect x="12" y="40" width="62" height="4"  fill="#4a2e0e"/>
-    <rect x="16" y="43" width="54" height="3"  fill="#3a2008"/>
-    <rect x="6"  y="32" width="74" height="4"  fill="#6b4720"/>
-    <!-- grass -->
-    <rect x="4"  y="24" width="78" height="10" fill="#2d5a1b"/>
-    <rect x="4"  y="24" width="78" height="3"  fill="#3d7a25"/>
-    <rect x="6"  y="22" width="4"  height="3"  fill="#3d7a25"/>
-    <rect x="18" y="21" width="6"  height="4"  fill="#3d7a25"/>
-    <rect x="38" y="21" width="8"  height="4"  fill="#3d7a25"/>
-    <rect x="62" y="22" width="5"  height="3"  fill="#3d7a25"/>
-    <!-- dead tree left -->
-    <rect x="10" y="10" width="3" height="15" fill="#4a3018"/>
-    <rect x="7"  y="14" width="5" height="2"  fill="#4a3018"/>
-    <rect x="13" y="12" width="4" height="2"  fill="#4a3018"/>
-    <!-- palm right -->
-    <rect x="70" y="6"  width="3" height="20" fill="#6b4a20"/>
-    <rect x="63" y="4"  width="8" height="2"  fill="#2a7a20"/>
-    <rect x="71" y="2"  width="9" height="2"  fill="#3a8a28"/>
-    <rect x="73" y="0"  width="5" height="3"  fill="#3a8a28"/>
-    <!-- tank -->
-    <rect x="28" y="20" width="26" height="6"  fill="#4a5a20"/>
-    <rect x="30" y="16" width="20" height="6"  fill="#5a6a28"/>
-    <rect x="32" y="14" width="16" height="4"  fill="#4a5a20"/>
-    <rect x="26" y="24" width="28" height="4"  fill="#2a2a2a"/>
-    <rect x="27" y="26" width="2"  height="2"  fill="#555"/>
-    <rect x="31" y="26" width="2"  height="2"  fill="#555"/>
-    <rect x="35" y="26" width="2"  height="2"  fill="#555"/>
-    <rect x="39" y="26" width="2"  height="2"  fill="#555"/>
-    <rect x="43" y="26" width="2"  height="2"  fill="#555"/>
-    <rect x="47" y="26" width="2"  height="2"  fill="#555"/>
-    <!-- turret + barrel -->
-    <rect x="36" y="12" width="14" height="5"  fill="#5a6a28"/>
-    <rect x="50" y="13" width="16" height="3"  fill="#3a4a18"/>
-    <!-- muzzle flash -->
-    <g class="war-muzzle">
-      <rect x="64" y="10" width="6" height="6"  fill="#ffcc00" opacity="0.95"/>
-      <rect x="66" y="8"  width="4" height="10" fill="#ffaa00" opacity="0.8"/>
-      <rect x="62" y="12" width="10" height="4" fill="#fff"    opacity="0.5"/>
-    </g>
-    <!-- soldier crouching -->
-    <rect x="16" y="18" width="3" height="3"  fill="#c8a878"/>
-    <rect x="16" y="17" width="3" height="2"  fill="#4a5a20"/>
-    <rect x="15" y="21" width="5" height="3"  fill="#4a5a20"/>
-    <rect x="19" y="19" width="5" height="1"  fill="#2a1a0a"/>
-    <rect x="15" y="24" width="2" height="2"  fill="#2a3a10"/>
-    <rect x="18" y="23" width="2" height="2"  fill="#2a3a10"/>
-    <!-- smoke -->
-    <rect class="war-smoke1" x="64" y="8"  width="4" height="3" fill="#999" opacity="0.7"/>
-    <rect class="war-smoke2" x="63" y="4"  width="5" height="3" fill="#888" opacity="0.5"/>
-    <rect class="war-smoke3" x="64" y="1"  width="4" height="3" fill="#777" opacity="0.3"/>
-  </svg>
-    &#x1F4DC; WAR JOURNAL
-  </a>
-  <a href="coc-warroom.html" class="nav-float-btn nav-coc">
-    <svg class="coc-king-svg nav-float-art" width="72" height="62" viewBox="0 0 72 62" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+  <a href="brainstew.html" style="background:linear-gradient(180deg,#ffee88 0%,#ffcc00 45%,#cc8800 100%);border-color:#ffff88 #886600 #886600 #ffff88;color:#000;">&#x1F9E0; BRAIN STEW</a>
+  <a href="war-journal.html" class="war-island-link" title="War Journal — Field Dispatches from the Foxhole Front">
+    <svg class="war-island-svg" width="94" height="70" viewBox="0 0 94 72" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
 
-  <style>
-    .arrow {
-      opacity: 0;
-      transform: translateX(-28px);
-      transition: transform 0.35s cubic-bezier(.2,.8,.3,1), opacity 0.15s;
-    }
+  <!-- ── HANGING CHAINS (floating island) ── -->
+  <!-- left chain -->
+  <rect x="22" y="54" width="2" height="3" fill="#555"/>
+  <rect x="22" y="58" width="2" height="3" fill="#444"/>
+  <rect x="22" y="62" width="2" height="3" fill="#555"/>
+  <rect x="22" y="66" width="2" height="2" fill="#444"/>
+  <!-- right chain -->
+  <rect x="70" y="54" width="2" height="3" fill="#555"/>
+  <rect x="70" y="58" width="2" height="3" fill="#444"/>
+  <rect x="70" y="62" width="2" height="3" fill="#555"/>
+  <rect x="70" y="66" width="2" height="2" fill="#444"/>
 
-    .nav-float-btn:hover .arrow {
-      opacity: 1;
-      transform: translateX(0);
-    }
+  <!-- ── ISLAND BODY ── -->
+  <!-- dirt underside (jagged bottom) -->
+  <rect x="14" y="48" width="66" height="8"  fill="#5c3d1e"/>
+  <rect x="18" y="54" width="58" height="4"  fill="#4a2e0e"/>
+  <rect x="22" y="56" width="50" height="3"  fill="#3a2008"/>
+  <!-- taper at edges -->
+  <rect x="10" y="46" width="74" height="4"  fill="#6b4720"/>
+  <rect x="8"  y="44" width="78" height="3"  fill="#5c3d1e"/>
+  <!-- grass top -->
+  <rect x="6"  y="36" width="82" height="10" fill="#2d5a1b"/>
+  <rect x="6"  y="36" width="82" height="3"  fill="#3d7a25"/>
+  <!-- grass bumps -->
+  <rect x="8"  y="34" width="4"  height="3"  fill="#3d7a25"/>
+  <rect x="16" y="33" width="6"  height="4"  fill="#3d7a25"/>
+  <rect x="26" y="34" width="4"  height="3"  fill="#2d5a1b"/>
+  <rect x="40" y="33" width="8"  height="4"  fill="#3d7a25"/>
+  <rect x="58" y="34" width="4"  height="3"  fill="#3d7a25"/>
+  <rect x="68" y="33" width="6"  height="4"  fill="#3d7a25"/>
+  <rect x="80" y="34" width="4"  height="3"  fill="#2d5a1b"/>
 
-    .arrow2 { transition-delay: 0.08s; }
-    .arrow3 { transition-delay: 0.16s; }
+  <!-- ── DEAD TREE (left) ── -->
+  <rect x="12" y="22" width="3" height="16" fill="#4a3018"/>
+  <rect x="9"  y="26" width="6" height="2"  fill="#4a3018"/>
+  <rect x="7"  y="28" width="4" height="2"  fill="#4a3018"/>
+  <rect x="14" y="24" width="5" height="2"  fill="#4a3018"/>
+  <rect x="16" y="22" width="3" height="2"  fill="#4a3018"/>
 
-    .impact {
-      transform-origin: center;
-      transition: transform 0.15s ease;
-    }
+  <!-- ── PALM TREE (right) ── -->
+  <rect x="76" y="16" width="3" height="22" fill="#6b4a20"/>
+  <!-- fronds -->
+  <rect x="69" y="14" width="10" height="2" fill="#2a7a20"/>
+  <rect x="67" y="12" width="8"  height="2" fill="#2a7a20"/>
+  <rect x="76" y="12" width="10" height="2" fill="#3a8a28"/>
+  <rect x="78" y="10" width="8"  height="2" fill="#2a7a20"/>
+  <rect x="73" y="8"  width="6"  height="4" fill="#3a8a28"/>
+  <!-- coconuts -->
+  <rect x="75" y="16" width="2" height="2"  fill="#8b4513"/>
+  <rect x="78" y="15" width="2" height="2"  fill="#8b4513"/>
 
-    .nav-float-btn:hover .impact {
-      transform: translateX(1px) translateY(1px);
-    }
-  </style>
+  <!-- ── TANK ── -->
+  <!-- tank body -->
+  <rect x="36" y="32" width="28" height="6"  fill="#4a5a20"/>
+  <rect x="38" y="28" width="22" height="6"  fill="#5a6a28"/>
+  <rect x="40" y="26" width="18" height="4"  fill="#4a5a20"/>
+  <!-- tank treads -->
+  <rect x="34" y="36" width="30" height="4"  fill="#2a2a2a"/>
+  <rect x="34" y="36" width="30" height="1"  fill="#3a3a3a"/>
+  <rect x="35" y="38" width="2"  height="2"  fill="#555"/>
+  <rect x="39" y="38" width="2"  height="2"  fill="#555"/>
+  <rect x="43" y="38" width="2"  height="2"  fill="#555"/>
+  <rect x="47" y="38" width="2"  height="2"  fill="#555"/>
+  <rect x="51" y="38" width="2"  height="2"  fill="#555"/>
+  <rect x="55" y="38" width="2"  height="2"  fill="#555"/>
+  <rect x="59" y="38" width="2"  height="2"  fill="#555"/>
+  <!-- turret -->
+  <rect x="44" y="22" width="16" height="6"  fill="#5a6a28"/>
+  <!-- gun barrel -->
+  <rect x="60" y="23" width="18" height="3"  fill="#3a4a18"/>
+  <rect x="62" y="22" width="16" height="2"  fill="#4a5a20"/>
 
-  <!-- SHIELD GROUP -->
-  <g class="impact">
-
-    <!-- GOLD BORDER -->
-    <polygon points="18,8 54,8 60,14 60,38 36,58 12,38 12,14"
-             fill="#c9a33a"/>
-    <polygon points="20,10 52,10 57,15 57,36 36,54 15,36 15,15"
-             fill="#f2d16b"/>
-
-    <!-- INNER SHADOW -->
-    <polygon points="22,12 50,12 54,16 54,35 36,51 18,35 18,16"
-             fill="#7a4a12"/>
-
-    <!-- WOOD BODY -->
-    <polygon points="23,13 49,13 53,17 53,34 36,50 19,34 19,17"
-             fill="#8b5a2b"/>
-
-    <!-- WOOD PLANKS -->
-    <rect x="25" y="16" width="22" height="4" fill="#9c6a34"/>
-    <rect x="25" y="22" width="22" height="4" fill="#7e4f25"/>
-    <rect x="25" y="28" width="22" height="4" fill="#9c6a34"/>
-
-    <!-- WOOD GRAIN LINES -->
-    <rect x="30" y="16" width="1" height="16" fill="#5e3818" opacity="0.5"/>
-    <rect x="38" y="16" width="1" height="16" fill="#5e3818" opacity="0.5"/>
-
-    <!-- METAL RIVETS -->
-    <rect x="26" y="15" width="2" height="2" fill="#d8b24a"/>
-    <rect x="44" y="15" width="2" height="2" fill="#d8b24a"/>
-    <rect x="26" y="31" width="2" height="2" fill="#d8b24a"/>
-    <rect x="44" y="31" width="2" height="2" fill="#d8b24a"/>
-
+  <!-- MUZZLE FLASH -->
+  <g class="muzzle-flash">
+    <rect x="76" y="20" width="6" height="6"  fill="#ffcc00" opacity="0.9"/>
+    <rect x="78" y="18" width="4" height="10" fill="#ffaa00" opacity="0.7"/>
+    <rect x="74" y="22" width="10" height="4" fill="#ffffff" opacity="0.6"/>
+    <rect x="80" y="21" width="8" height="4"  fill="#ff8800" opacity="0.8"/>
   </g>
 
-  <!-- ARROWS -->
-  <!-- Arrow 1 -->
-  <g class="arrow">
-    <rect x="0" y="20" width="20" height="2" fill="#6e4b2a"/>
-    <rect x="0" y="19" width="4" height="4" fill="#dcdcdc"/>
-    <polygon points="20,21 24,18 24,24" fill="#cfcfcf"/>
+  <!-- SHELL STREAK -->
+  <g class="shell-streak">
+    <rect x="72" y="24" width="4" height="2"  fill="#ffdd44"/>
+    <rect x="74" y="24" width="2" height="1"  fill="#ffffff"/>
   </g>
 
-  <!-- Arrow 2 -->
-  <g class="arrow arrow2">
-    <rect x="2" y="28" width="18" height="2" fill="#6e4b2a"/>
-    <rect x="2" y="27" width="4" height="4" fill="#dcdcdc"/>
-    <polygon points="20,29 24,26 24,32" fill="#cfcfcf"/>
+  <!-- ── SOLDIERS ── -->
+  <!-- soldier 1 (left, running left with rifle) -->
+  <!-- head -->
+  <rect x="22" y="28" width="4" height="4"   fill="#c8a878"/>
+  <rect x="22" y="27" width="4" height="2"   fill="#4a5a20"/><!-- helmet -->
+  <!-- body -->
+  <rect x="22" y="32" width="4" height="4"   fill="#4a5a20"/>
+  <!-- left arm up (shooting) -->
+  <rect x="20" y="30" width="2" height="4"   fill="#4a5a20"/>
+  <!-- right arm -->
+  <rect x="26" y="32" width="3" height="2"   fill="#4a5a20"/>
+  <!-- rifle -->
+  <rect x="18" y="29" width="5" height="1"   fill="#2a1a0a"/>
+  <!-- legs running -->
+  <rect x="22" y="36" width="2" height="3"   fill="#2a3a10"/>
+  <rect x="24" y="36" width="2" height="3"   fill="#2a3a10"/>
+
+  <!-- soldier 2 (far left, crouching) -->
+  <!-- head -->
+  <rect x="8"  y="30" width="3" height="3"   fill="#c8a878"/>
+  <rect x="8"  y="29" width="3" height="2"   fill="#4a5a20"/>
+  <!-- body crouching -->
+  <rect x="7"  y="33" width="5" height="3"   fill="#4a5a20"/>
+  <!-- rifle forward -->
+  <rect x="11" y="31" width="6" height="1"   fill="#2a1a0a"/>
+  <!-- muzzle flash small -->
+  <g class="muzzle-flash">
+    <rect x="17" y="30" width="3" height="3" fill="#ffcc00" opacity="0.9"/>
+  </g>
+  <!-- legs -->
+  <rect x="7"  y="36" width="2" height="2"   fill="#2a3a10"/>
+  <rect x="10" y="35" width="2" height="2"   fill="#2a3a10"/>
+
+  <!-- ── EXPLOSION (right side, small) ── -->
+  <g class="muzzle-flash">
+    <rect x="84" y="28" width="4" height="4" fill="#ff6600" opacity="0.8"/>
+    <rect x="82" y="30" width="8" height="2" fill="#ffaa00" opacity="0.7"/>
+    <rect x="84" y="26" width="4" height="6" fill="#ff4400" opacity="0.6"/>
+    <rect x="86" y="24" width="2" height="2" fill="#ffdd00" opacity="0.9"/>
+    <rect x="80" y="26" width="2" height="2" fill="#ff8800" opacity="0.5"/>
   </g>
 
-  <!-- Arrow 3 -->
-  <g class="arrow arrow3">
-    <rect x="4" y="36" width="16" height="2" fill="#6e4b2a"/>
-    <rect x="4" y="35" width="4" height="4" fill="#dcdcdc"/>
-    <polygon points="20,37 24,34 24,40" fill="#cfcfcf"/>
-  </g>
+  <!-- ── SMOKE COLUMNS ── -->
+  <!-- smoke from tank barrel -->
+  <rect class="smoke1" x="77" y="16" width="4" height="4" fill="#888" rx="2" opacity="0.7"/>
+  <rect class="smoke2" x="75" y="10" width="6" height="5" fill="#999" rx="2" opacity="0.5"/>
+  <rect class="smoke3" x="76" y="4"  width="5" height="5" fill="#777" rx="2" opacity="0.3"/>
+  <!-- smoke from explosion right -->
+  <rect class="smoke2" x="84" y="22" width="4" height="4" fill="#888" rx="1" opacity="0.6"/>
+  <rect class="smoke1" x="83" y="16" width="5" height="5" fill="#777" rx="2" opacity="0.4"/>
 
 </svg>
-    &#x2694; COC WAR ROOM
+    WAR JOURNAL
   </a>
 </nav>
 
@@ -986,8 +917,8 @@
         <a href="https://archive.org/" target="_blank">internet archive</a>
         <a href="https://neocities.org/" target="_blank">neocities home</a>
         <a href="webring.html">&#x1F916; UC Webring</a>
-        <a href="https://www.youtube.com/@MoreCrowns" target="_blank">One of my fav FiveM Trolls</a>
-        <a href="https://www.youtube.com/@bigcheefer" target="_blank">The Other One</a>
+        <a href="https://youtu.be/dQw4w9WgXcQ?si=6WBNcO2N9mpVv_Yj" target="_blank">DONT CLICK!! FOR UR SAFETY</a>
+      
       </div>
     </div>
 
